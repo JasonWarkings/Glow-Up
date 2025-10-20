@@ -1,3 +1,7 @@
+<script setup>
+
+</script>
+
 <template>
   <footer class="footer">
     <p>© 2025 GlowUp. Все права защищены.</p>

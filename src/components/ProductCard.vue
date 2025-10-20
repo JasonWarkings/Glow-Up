@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script>
+<script >
 export default {
   props: ['name', 'price', 'image']
 }
