@@ -27,7 +27,7 @@
     <div class="promo-card">
       <h3>✨ Скидка 20% на первый заказ</h3>
       <p>Зарегистрируйся и получи промокод на скидку. GlowUp приветствует новых клиентов!</p>
-      <button class="promo-button">Получить промокод</button>
+      <button  class="promo-button">Получить промокод</button>
     </div>
     <div class="promo-card">
       <h3>💄 Осенняя распродажа</h3>

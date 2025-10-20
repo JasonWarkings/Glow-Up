@@ -1,13 +1,16 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import MainPage from '../pages/MainPage.vue'
+// src/router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+import HomePage from '../pages/MainPage.vue';
+import SalePage from '../pages/SalesPage.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: MainPage }
-]
+  { path: '/', component: HomePage },
+  { path: '/sales', component: SalePage },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
