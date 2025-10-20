@@ -29,12 +29,12 @@ button {
   margin-top: 10px;
   padding: 0.5rem 1rem;
   border: none;
-  background: #ff9999;
+  background: #c7d4a9;
   color: white;
   border-radius: 6px;
   cursor: pointer;
 }
 button:hover {
-  background: #ff7f7f;
+  background: #c7d4a9;
 }
 </style>

@@ -1,3 +1,4 @@
+//Header.vue
 <template>
   <header class="header">
     <h1 class="logo">GlowUp</h1>
@@ -15,8 +16,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 50px;
-  background-color: #fadadd;
+  padding: 25px 70px;
+  background-color: #A98BDB;
 }
 .logo {
   font-size: 28px;
