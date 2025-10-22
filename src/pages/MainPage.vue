@@ -4,8 +4,13 @@
     <section class="hero">
       <h1>Добро пожаловать в GlowUp</h1>
       <p>Открой для себя косметику, которая подчеркнёт твою естественную красоту ✨</p>
-      <button class="shop-btn">Перейти в каталог</button>
+     <router-link to="/catalog" class="catalog-button">
+  Перейти в каталог
+</router-link>
+
     </section>
+
+    
 
     <!-- Преимущества -->
     <section class="features">
@@ -34,26 +39,33 @@
         <div class="promo-card">
           <h3>✨ Скидка 20% на первый заказ</h3>
           <p>Зарегистрируйся и получи промокод на скидку. GlowUp приветствует новых клиентов!</p>
-          <button class="promo-button">Получить промокод</button>
+         <router-link to="/register" class="promo-button">
+  Получить промокод
+</router-link>
+
         </div>
         <div class="promo-card">
           <h3>💄 Осенняя распродажа</h3>
           <p>Только до 31 декабря — скидки до 50% на топовые бренды.</p>
-          <button class="promo-button">Смотреть товары</button>
+         <router-link to="/catalog" class="promo-button">
+  Смотреть товары
+</router-link>
+
         </div>
         <div class="promo-card">
           <h3>🚚 Бесплатная доставка</h3>
           <p>При заказе от 10 000 ₸ — доставка за наш счёт!</p>
-          <button class="promo-button">Условия акции</button>
+         <router-link to="/promo-terms" class="promo-button">
+  Условия акции
+</router-link>
+
         </div>
       </div>
     </section>
   </div>
 </template>
 
-<script setup>
-// Здесь можно добавить логику перехода или динамики
-</script>
+
 
 <style scoped>
 .main-page {
@@ -175,9 +187,18 @@
   transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.promo-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(168, 85, 247, 0.3);
+.catalog-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #e286f3; /* розовый, как на баннере */
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.catalog-button:hover {
+  background-color: #d06fb2;
 }
 
 /* Адаптация */
