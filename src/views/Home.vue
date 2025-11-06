@@ -20,6 +20,12 @@ import Footer from '../components/Footer.vue'
 import Payment from './Payment.vue'
 import Profile from './Profile.vue'
 import About from './About.vue'
+import CategoryBodycare from './CategoryBodycare.vue'
+import CategoryHaircare from './CategoryHaircare.vue'
+import CategoryMakeup from './CategoryMakeup.vue'
+import CategoryMen from './CategoryMen.vue'
+import CategoryPerfume from './CategoryPerfume.vue'
+import CategorySkincare from './CategorySkincare.vue'
 
 
 export default {
@@ -33,6 +39,12 @@ export default {
     Payment,
     Profile,
     About,
+    CategoryBodycare,
+    CategoryHaircare,
+    CategoryMakeup,
+    CategoryMen,
+    CategorySkincare,
+    CategoryPerfume,
     PromoSection,
 
     Footer

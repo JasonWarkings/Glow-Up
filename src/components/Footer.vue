@@ -22,9 +22,7 @@
               </router-link>
             </li>
             <li>
-              <router-link to="/return" class="hover:text-white transition">
-                Возврат товара
-              </router-link>
+           
             </li>
           </ul>
         </div>

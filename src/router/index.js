@@ -1,27 +1,48 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Импорты страниц
+// Импорт всех страниц
 import Home from '../views/Home.vue'
+import Catalog from '../views/Catalog.vue'
 import Sales from '../views/Sales.vue'
 import New from '../views/New.vue'
-import Catalog from '../views/Catalog.vue'
 import Delivery from '../views/Delivery.vue'
 import Payment from '../views/Payment.vue'
 import About from '../views/About.vue'
+import Profile from '../views/Profile.vue'
+import Favorites from '@/views/Favorites.vue'
+import Cart from '../views/Cart.vue'
+import CategoryBodycare from '../views/CategoryBodycare.vue'
+import CategoryHaircare from '../views/CategoryHaircare.vue'
+import CategoryMakeup from '../views/CategoryMakeup.vue'
+import CategoryMen from '../views/CategoryMen.vue'
+import CategoryPerfume from '../views/CategoryPerfume.vue'
+import CategorySkincare from '../views/CategorySkincare.vue'
+
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
+  { path: '/catalog', name: 'Catalog', component: Catalog },
   { path: '/sales', name: 'Sales', component: Sales },
   { path: '/new', name: 'New', component: New },
-  { path: '/catalog', name: 'Catalog', component: Catalog },
   { path: '/delivery', name: 'Delivery', component: Delivery },
   { path: '/payment', name: 'Payment', component: Payment },
-  { path: '/about', name: 'About', component: About }
+  { path: '/about', name: 'About', component: About },
+  { path: '/profile', name: 'Profile', component: Profile },
+  { path: '/favorites', name: 'Favorites', component: Favorites },
+  { path: '/cart', name: 'Cart', component: Cart },
+  { path: '/categoryBodycare', name: 'CategoryBodycare', component: CategoryBodycare},
+ { path: '/categoryHaircare', name: 'CategoryHaircare', component: CategoryHaircare},
+ { path: '/categoryMakeup.vue', name: 'CategoryMakeup', component: CategoryMakeup},
+ { path: '/categoryMen', name: 'CategoryMen', component: CategoryMen},
+ { path: '/categoryPerfume', name: 'CategoryPerfume', component: CategoryPerfume},
+ { path: '/categorySkincare', name: 'CategorySkincare', component: CategorySkincare},
+
+
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
 
 export default router
