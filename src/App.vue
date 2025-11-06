@@ -1,14 +1,11 @@
 <template>
   <div id="app">
-    <!-- Общий Header -->
     <Header />
 
-    <!-- Контент страницы -->
     <main class="min-h-screen bg-gray-50">
       <router-view />
     </main>
 
-    <!-- Общий Footer -->
     <Footer />
   </div>
 </template>
@@ -19,7 +16,10 @@ import Footer from './components/Footer.vue'
 
 export default {
   name: 'App',
-  components: { Header, Footer }
+  components: {
+    Header,
+    Footer
+  }
 }
 </script>
 
