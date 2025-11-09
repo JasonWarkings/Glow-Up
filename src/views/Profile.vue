@@ -12,15 +12,19 @@
           <p class="text-gray-600 mb-6">
             Для доступа к личному кабинету необходимо авторизоваться
           </p>
-          <button
-            class="bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition"
+
+          <!-- Кнопка "Войти" -->
+          <router-link
+            to="/login"
+            class="inline-block bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition"
           >
             Войти
-          </button>
+          </router-link>
         </div>
       </section>
     </main>
 
+  
   </div>
 </template>
 

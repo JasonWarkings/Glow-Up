@@ -8,7 +8,6 @@ import New from '../views/New.vue'
 import Delivery from '../views/Delivery.vue'
 import Payment from '../views/Payment.vue'
 import About from '../views/About.vue'
-import Profile from '../views/Profile.vue'
 import Favorites from '@/views/Favorites.vue'
 import Cart from '../views/Cart.vue'
 import CategoryBodycare from '../views/CategoryBodycare.vue'
@@ -17,6 +16,8 @@ import CategoryMakeup from '../views/CategoryMakeup.vue'
 import CategoryMen from '../views/CategoryMen.vue'
 import CategoryPerfume from '../views/CategoryPerfume.vue'
 import CategorySkincare from '../views/CategorySkincare.vue'
+import Profile from '../views/Profile.vue'
+import Login from '../views/Login.vue'
 
 
 const routes = [
@@ -36,6 +37,7 @@ const routes = [
  { path: '/categoryMen', name: 'CategoryMen', component: CategoryMen},
  { path: '/categoryPerfume', name: 'CategoryPerfume', component: CategoryPerfume},
  { path: '/categorySkincare', name: 'CategorySkincare', component: CategorySkincare},
+  { path: '/login', name: 'Login', component: Login },
 
 
 ]

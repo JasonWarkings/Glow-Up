@@ -9,12 +9,13 @@
           <p class="text-lg text-gray-700 mb-6">
             Премиальная косметика и парфюмерия с доставкой по всему Казахстану
           </p>
-          <button class="bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition font-medium">
-            Смотреть каталог
-          </button>
+          <router-link to="/catalog">
+            <button class="bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition font-medium text-lg">
+              Смотреть каталог
+            </button>
+          </router-link>
         </div>
         <div class="hidden md:block">
-          <!-- СЮДА: Вставьте ваше изображение -->
           <img 
             src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=600&fit=crop"
             alt="Glow-Up Beauty products"
