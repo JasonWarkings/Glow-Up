@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <Header :cartCount="0" :favoritesCount="0" />
     
     <section class="max-w-md mx-auto px-4 py-12">
       <div class="bg-white rounded-2xl shadow-lg p-8">
@@ -82,30 +81,28 @@
 
         <!-- Register Link -->
         <div class="text-center mt-6">
-          <p class="text-gray-600">
-            Нет аккаунта? 
-            <router-link to="/register" class="text-pink-600 hover:text-pink-700 font-medium">
-              Зарегистрироваться
-            </router-link>
+         <p class="text-gray-600 mt-4">
+  Нет аккаунта?
+  <router-link
+    to="/register"
+    class="text-pink-600 font-medium hover:underline"
+  >
+    Зарегистрироваться
+  </router-link>
           </p>
         </div>
       </div>
     </section>
     
-    <Footer />
+
   </div>
 </template>
 
 <script>
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
 
 export default {
   name: 'Login',
-  components: {
-    Header,
-    Footer
-  },
+
   data() {
     return {
       email: '',
