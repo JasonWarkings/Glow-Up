@@ -66,7 +66,7 @@
           <!-- Kaspi -->
           <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition border-2 border-pink-500">
             <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-              Популярно
+            
             </div>
             <div class="bg-gradient-to-br from-red-100 to-pink-100 p-4 rounded-xl mb-4 text-center">
               <span class="text-5xl">🏦</span>
@@ -418,11 +418,9 @@
           <p class="text-gray-700 mb-6">Наши специалисты помогут выбрать удобный способ оплаты</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="tel:+77005553535" class="bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition font-medium">
-              📞 8 (800) 555-35-35
+              📞 8 777 555-35-35
             </a>
-            <a href="https://wa.me/77005553535" class="bg-green-600 text-white px-8 py-3 rounded-full hover:bg-green-700 transition font-medium">
-              💬 WhatsApp
-            </a>
+            
           </div>
         </div>
       </div>
@@ -432,14 +430,12 @@
 </template>
 
 <script>
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
+
 
 export default {
   name: 'Payment',
   components: {
-    Header,
-    Footer
+   
   }
 }
 </script>
