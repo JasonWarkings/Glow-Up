@@ -97,6 +97,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ url('admin/orders') }}" class="nav-link">
+                        <i class="nav-icon bi bi-receipt"></i>
+                        <p>Заказы</p>
+                    </a>
+                </li>
+
 
                 </ul>
             </nav>

@@ -39,5 +39,12 @@ Route::prefix('admin')->group(function () {
         return view('admin.users.index'); 
     });
 
+    Route::get('/orders', function () {
+        return view('admin.orders.index');
+    })->name('admin.orders');
+
+    Route::get('/orders/show/{id}', function ($id) {
+        return view('admin.orders.show', ['id' => $id]);
+    })->name('admin.orders.show');
 
 });
