@@ -19,6 +19,7 @@
                     <th>Бренд</th>
                     <th>Фото</th>
                     <th>Цена</th>
+                    <th>Акция / Скидка</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -31,6 +32,14 @@
                     <td>Фото</td>
                     <td>10000</td>
                     <td>
+                        @php $promo = null; @endphp {{-- Заменить на данные из базы --}}
+                        @if($promo)
+                            {{ $promo->name }} - {{ $promo->discount }}%
+                        @else
+                            Нет акции
+                        @endif
+                    </td>
+                    <td>
                         <a href="{{ url('admin/products/edit/1') }}" class="btn btn-sm btn-warning">Редактировать</a>
                         <a href="{{ url('admin/products') }}" class="btn btn-sm btn-danger">Удалить</a>
                     </td>
@@ -42,6 +51,14 @@
                     <td>Brand B</td>
                     <td>Фото</td>
                     <td>15000</td>
+                    <td>
+                        @php $promo = (object)['name'=>'Летняя акция', 'discount'=>10]; @endphp
+                        @if($promo)
+                            {{ $promo->name }} - {{ $promo->discount }}%
+                        @else
+                            Нет акции
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ url('admin/products/edit/2') }}" class="btn btn-sm btn-warning">Редактировать</a>
                         <a href="{{ url('admin/products') }}" class="btn btn-sm btn-danger">Удалить</a>

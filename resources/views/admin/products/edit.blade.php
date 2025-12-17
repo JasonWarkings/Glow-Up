@@ -34,6 +34,15 @@
             </div>
 
             <div class="mb-3">
+                <label class="form-label">Акция / Скидка</label>
+                <select class="form-select">
+                    <option value="">Нет акции</option>
+                    <option selected value="1">Летняя акция - 10%</option>
+                    <option value="2">Зимняя распродажа - 15%</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label">Фото</label>
                 <input type="file" class="form-control">
             </div>
