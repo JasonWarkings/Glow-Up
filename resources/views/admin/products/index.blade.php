@@ -25,7 +25,7 @@
                     <td>1</td>
                     <td>Товар 1</td>
                     <td>Фото</td>
-                    <td>1000</td>
+                    <td>10000</td>
                     <td>
                         <a href="{{ url('admin/products/edit/1') }}" class="btn btn-sm btn-warning">Редактировать</a>
                     </td>
