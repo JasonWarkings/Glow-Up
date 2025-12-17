@@ -56,5 +56,17 @@ Route::prefix('admin')->group(function () {
         return view('admin.reviews.show', ['id' => $id]);
     })->name('admin.reviews.show');
 
-    
+
+    Route::get('/promotions', function () {
+        return view('admin.promotions.index');
+    })->name('admin.promotions');
+
+    Route::get('/promotions/create', function () {
+        return view('admin.promotions.create');
+    })->name('admin.promotions.create');
+
+    Route::get('/promotions/edit/{id}', function ($id) {
+        return view('admin.promotions.edit', ['id' => $id]);
+    })->name('admin.promotions.edit');
+
 });

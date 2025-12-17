@@ -111,6 +111,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ url('admin/promotions') }}" class="nav-link">
+                        <i class="nav-icon bi bi-gift"></i>
+                        <p>Акции и скидки</p>
+                    </a>
+                </li>
+
 
                 </ul>
             </nav>
