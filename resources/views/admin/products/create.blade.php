@@ -9,51 +9,15 @@
 
 <div class="app-content">
     <div class="container-fluid">
-        <form action="#" method="POST">
-            <div class="mb-3">
-                <label class="form-label">Название</label>
-                <input type="text" class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Категория</label>
-                <select class="form-select">
-                    <option>Выберите категорию</option>
-                    <option>Уход за лицом</option>
-                    <option>Уход за телом</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Бренд</label>
-                <select class="form-select">
-                    <option>Выберите бренд</option>
-                    <option>Brand A</option>
-                    <option>Brand B</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Акция / Скидка</label>
-                 <select class="form-select">
-                    <option value="">Нет акции</option>
-                    <option value="1">Летняя акция - 10%</option>
-                    <option value="2">Зимняя распродажа - 15%</option>
-                </select>
-            </div>
-
-
-            <div class="mb-3">
-                <label class="form-label">Фото</label>
-                <input type="file" class="form-control">
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Цена</label>
-                <input type="number" class="form-control">
-            </div>
-
-            <a href="{{ url('admin/products') }}" class="btn btn-primary">Добавить</a>
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input class="form-control mb-2" name="title" placeholder="Название">
+            <input class="form-control mb-2" name="category" placeholder="Категория">
+            <input class="form-control mb-2" name="brand" placeholder="Бренд">
+            <input class="form-control mb-2" name="price" type="number" placeholder="Цена">
+            <input class="form-control mb-2" name="discount" placeholder="Скидка">
+            <input class="form-control mb-2" name="image" type="file">
+            <button class="btn btn-primary">Добавить</button>
         </form>
     </div>
 </div>

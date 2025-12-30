@@ -2,79 +2,112 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ProductController;
 
-// Страница логина (первая страница)
+/*
+|--------------------------------------------------------------------------
+| AUTH (LOGIN)
+|--------------------------------------------------------------------------
+*/
+
+// Первая страница — логин
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('admin.login');
 
-// Обработка логина
+// Отправка формы логина
 Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
 
-// Выйти из админки
+// Выход
 Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
-// Маршруты админки
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN PANEL
+|--------------------------------------------------------------------------
+*/
 Route::prefix('admin')->group(function () {
+
+    // Dashboard
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
 
-    Route::get('/products', function () {
-        return view('admin.products.index');
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUCTS (через контроллер)
+    |--------------------------------------------------------------------------
+    */
+     Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
+    Route::get('/products/edit/{product}', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::post('/products/update/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::post('/products/delete/{product}', [ProductController::class, 'destroy'])->name('admin.products.delete');
 
-    Route::get('/products/create', function () {
-        return view('admin.products.create');
-    });
-
-    Route::get('/products/edit/{id}', function ($id) {
-        return view('admin.products.edit', ['id' => $id]);
-    });
-
+    /*
+    |--------------------------------------------------------------------------
+    | CATEGORIES
+    |--------------------------------------------------------------------------
+    */
     Route::get('/categories', fn () => view('admin.categories.index'));
     Route::get('/categories/create', fn () => view('admin.categories.create'));
-    Route::get('/categories/edit/{id}', function ($id) {
-        return view('admin.categories.edit');
-    });
+    Route::get('/categories/edit/{id}', fn ($id) => view('admin.categories.edit'));
 
-    Route::get('/brands', function () {
-        return view('admin.brands.index');
-    });
-    Route::get('/brands/create', function () {
-        return view('admin.brands.create');
-    });
-    Route::get('/brands/edit/{id}', function ($id) {
-        return view('admin.brands.edit', ['id' => $id]);
-    });
 
-    Route::get('/users', function () { 
-        return view('admin.users.index'); 
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | BRANDS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/brands', fn () => view('admin.brands.index'));
+    Route::get('/brands/create', fn () => view('admin.brands.create'));
+    Route::get('/brands/edit/{id}', fn ($id) => view('admin.brands.edit'));
 
-    Route::get('/orders', function () {
-        return view('admin.orders.index');
-    })->name('admin.orders');
 
-    Route::get('/orders/show/{id}', function ($id) {
-        return view('admin.orders.show', ['id' => $id]);
-    })->name('admin.orders.show');
+    /*
+    |--------------------------------------------------------------------------
+    | USERS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/users', fn () => view('admin.users.index'));
 
-    Route::get('/reviews', function () {
-        return view('admin.reviews.index');
-    })->name('admin.reviews');
 
-    Route::get('/reviews/show/{id}', function ($id) {
-        return view('admin.reviews.show', ['id' => $id]);
-    })->name('admin.reviews.show');
+    /*
+    |--------------------------------------------------------------------------
+    | ORDERS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/orders', fn () => view('admin.orders.index'))
+        ->name('admin.orders');
 
-    Route::get('/promotions', function () {
-        return view('admin.promotions.index');
-    })->name('admin.promotions');
+    Route::get('/orders/show/{id}', fn ($id) => view('admin.orders.show'))
+        ->name('admin.orders.show');
 
-    Route::get('/promotions/create', function () {
-        return view('admin.promotions.create');
-    })->name('admin.promotions.create');
 
-    Route::get('/promotions/edit/{id}', function ($id) {
-        return view('admin.promotions.edit', ['id' => $id]);
-    })->name('admin.promotions.edit');
+    /*
+    |--------------------------------------------------------------------------
+    | REVIEWS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/reviews', fn () => view('admin.reviews.index'))
+        ->name('admin.reviews');
+
+    Route::get('/reviews/show/{id}', fn ($id) => view('admin.reviews.show'))
+        ->name('admin.reviews.show');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROMOTIONS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/promotions', fn () => view('admin.promotions.index'))
+        ->name('admin.promotions');
+
+    Route::get('/promotions/create', fn () => view('admin.promotions.create'))
+        ->name('admin.promotions.create');
+
+    Route::get('/promotions/edit/{id}', fn ($id) => view('admin.promotions.edit'))
+        ->name('admin.promotions.edit');
+
 });
