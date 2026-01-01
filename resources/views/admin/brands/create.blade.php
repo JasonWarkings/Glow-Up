@@ -2,28 +2,24 @@
 
 @section('content')
 <div class="app-content-header">
-    <div class="container-fluid">
-        <h3>Добавить бренд</h3>
-    </div>
+    <h3>Добавить бренд</h3>
 </div>
 
 <div class="app-content">
     <div class="container-fluid">
-        <div class="card">
-            <div class="card-body">
-                <div class="mb-3">
-                    <label class="form-label">Название бренда</label>
-                    <input type="text" class="form-control" placeholder="Введите название бренда">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Логотип</label>
-                    <input type="file" class="form-control">
-                </div>
-
-                <a href="{{ url('admin/brands') }}" class="btn btn-secondary">Назад</a>
-                <a href="{{ url('admin/brands') }}" class="btn btn-primary">Сохранить</a>
+        <form action="{{ route('admin.brands.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-3">
+                <label class="form-label">Название бренда</label>
+                <input type="text" name="name" class="form-control" placeholder="Введите название">
             </div>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Логотип</label>
+                <input type="file" name="logo" class="form-control">
+            </div>
+            <a href="{{ route('admin.brands.index') }}" class="btn btn-secondary">Назад</a>
+            <button class="btn btn-primary">Сохранить</button>
+        </form>
     </div>
 </div>
 @endsection

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BrandController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,9 +65,23 @@ Route::prefix('admin')->group(function () {
     | BRANDS
     |--------------------------------------------------------------------------
     */
-    Route::get('/brands', fn () => view('admin.brands.index'));
-    Route::get('/brands/create', fn () => view('admin.brands.create'));
-    Route::get('/brands/edit/{id}', fn ($id) => view('admin.brands.edit'));
+    // Список брендов
+    Route::get('/brands', [BrandController::class, 'index'])->name('admin.brands.index');
+
+    // Форма создания
+    Route::get('/brands/create', [BrandController::class, 'create'])->name('admin.brands.create');
+
+    // Сохранение нового бренда
+    Route::post('/brands', [BrandController::class, 'store'])->name('admin.brands.store');
+
+    // Форма редактирования
+    Route::get('/brands/edit/{brand}', [BrandController::class, 'edit'])->name('admin.brands.edit');
+
+    // Обновление бренда
+    Route::post('/brands/update/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
+
+    // Удаление бренда
+    Route::post('/brands/delete/{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
 
 
     /*
