@@ -14,6 +14,7 @@ return new class extends Migration
             $table->integer('items_count');
             $table->integer('total_price');
             $table->string('status')->default('processing'); 
+            $table->string('product_image')->nullable(); 
             $table->timestamps();
         });
     }

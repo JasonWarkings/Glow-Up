@@ -14,5 +14,6 @@ class Order extends Model
         'items_count',
         'total_price',
         'status',
+        'product_image', 
     ];
 }

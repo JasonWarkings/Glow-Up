@@ -18,6 +18,7 @@ class StoreOrderRequest extends FormRequest
             'items_count'   => 'required|integer|min:1',
             'total_price'   => 'required|integer|min:0',
             'status'        => 'required|in:processing,completed',
+            'product_image' => 'nullable|string|max:255', 
         ];
     }
 }
