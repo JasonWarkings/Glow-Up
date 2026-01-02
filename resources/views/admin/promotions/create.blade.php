@@ -7,31 +7,37 @@
 
 <div class="app-content">
     <div class="container-fluid">
-        <div class="card">
-            <div class="card-body">
+        <form method="POST" action="{{ route('admin.promotions.store') }}">
+            @csrf
 
-                <div class="mb-3">
-                    <label class="form-label">Название акции</label>
-                    <input type="text" class="form-control" placeholder="Введите название">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Название акции</label>
+                        <input type="text" name="title" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Скидка (%)</label>
+                        <input type="number" name="discount" class="form-control">
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('admin.promotions.index') }}" class="btn btn-secondary">
+                            Назад
+                        </a>
+                        <button class="btn btn-primary">Сохранить</button>
+                    </div>
+
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Описание</label>
-                    <textarea class="form-control" rows="3" placeholder="Описание акции"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Скидка (%)</label>
-                    <input type="number" class="form-control" placeholder="10">
-                </div>
-
-                <div class="d-flex gap-2">
-                    <a href="{{ url('admin/promotions') }}" class="btn btn-secondary">Назад</a>
-                    <a href="{{ url('admin/promotions') }}" class="btn btn-primary">Сохранить</a>
-                </div>
-
             </div>
-        </div>
+        </form>
     </div>
 </div>
 @endsection

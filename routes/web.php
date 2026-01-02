@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\PromotionController;
+
 
 
 /*
@@ -128,13 +130,11 @@ Route::prefix('admin')->group(function () {
     | PROMOTIONS
     |--------------------------------------------------------------------------
     */
-    Route::get('/promotions', fn () => view('admin.promotions.index'))
-        ->name('admin.promotions');
-
-    Route::get('/promotions/create', fn () => view('admin.promotions.create'))
-        ->name('admin.promotions.create');
-
-    Route::get('/promotions/edit/{id}', fn ($id) => view('admin.promotions.edit'))
-        ->name('admin.promotions.edit');
+      Route::get('/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
+    Route::get('/promotions/create', [PromotionController::class, 'create'])->name('admin.promotions.create');
+    Route::post('/promotions', [PromotionController::class, 'store'])->name('admin.promotions.store');
+    Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');
+    Route::post('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
+    Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
 
 });
