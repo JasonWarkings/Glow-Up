@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\OrderController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -97,18 +99,17 @@ Route::prefix('admin')->group(function () {
     Route::post('/users/{adminUser}/status', [AdminUserController::class, 'updateStatus'])
         ->name('admin.users.status');
 
-        
+
     /*
     |--------------------------------------------------------------------------
     | ORDERS
     |--------------------------------------------------------------------------
     */
-    Route::get('/orders', fn () => view('admin.orders.index'))
-        ->name('admin.orders');
-
-    Route::get('/orders/show/{id}', fn ($id) => view('admin.orders.show'))
-        ->name('admin.orders.show');
-
+    Route::get('/orders', [OrderController::class, 'index'])
+    ->name('admin.orders.index');
+    
+    Route::get('/orders/show/{order}', [OrderController::class, 'show'])
+    ->name('admin.orders.show');
 
     /*
     |--------------------------------------------------------------------------
