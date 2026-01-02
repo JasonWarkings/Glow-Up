@@ -9,51 +9,39 @@
 
 <div class="app-content">
     <div class="container-fluid">
-        <form action="#" method="POST">
-            <div class="mb-3">
-                <label class="form-label">Название</label>
-                <input type="text" class="form-control">
-            </div>
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
 
-            <div class="mb-3">
-                <label class="form-label">Категория</label>
-                <select class="form-select">
-                    <option>Выберите категорию</option>
-                    <option>Уход за лицом</option>
-                    <option>Уход за телом</option>
-                </select>
-            </div>
+            <input class="form-control mb-2" name="title" placeholder="Название">
 
-            <div class="mb-3">
-                <label class="form-label">Бренд</label>
-                <select class="form-select">
-                    <option>Выберите бренд</option>
-                    <option>Brand A</option>
-                    <option>Brand B</option>
-                </select>
-            </div>
+            <select name="category" class="form-control mb-2">
+                <option value="">Выберите категорию</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->name }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
 
-            <div class="mb-3">
-                <label class="form-label">Акция / Скидка</label>
-                 <select class="form-select">
-                    <option value="">Нет акции</option>
-                    <option value="1">Летняя акция - 10%</option>
-                    <option value="2">Зимняя распродажа - 15%</option>
-                </select>
-            </div>
+            <select name="brand" class="form-control mb-2">
+                <option value="">Выберите бренд</option>
+                @foreach($brands as $brand)
+                    <option value="{{ $brand->name }}">{{ $brand->name }}</option>
+                @endforeach
+            </select>
 
+            <input class="form-control mb-2" name="price" type="number" placeholder="Цена">
 
-            <div class="mb-3">
-                <label class="form-label">Фото</label>
-                <input type="file" class="form-control">
-            </div>
+            <select name="discount" class="form-control mb-2">
+                <option value="">Нет акции</option>
+                @foreach($promotions as $promotion)
+                    <option value="{{ $promotion->discount }}">
+                        {{ $promotion->title }} – {{ $promotion->discount }}%
+                    </option>
+                @endforeach
+            </select>
 
-            <div class="mb-3">
-                <label class="form-label">Цена</label>
-                <input type="number" class="form-control">
-            </div>
+            <input class="form-control mb-2" name="image" type="file">
 
-            <a href="{{ url('admin/products') }}" class="btn btn-primary">Добавить</a>
+            <button class="btn btn-primary">Добавить</button>
         </form>
     </div>
 </div>

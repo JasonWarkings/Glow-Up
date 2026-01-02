@@ -8,27 +8,41 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    // Показываем форму входа
     public function showLoginForm()
     {
-        return view('admin.login'); 
+        return view('admin.login');
     }
 
+    // Логиним пользователя
     public function login(Request $request)
     {
+        // Валидируем email и пароль
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
+        // Пытаемся авторизовать
         if (Auth::attempt($credentials, $request->filled('remember'))) {
-            return redirect()->intended('/admin/dashboard');
+            $request->session()->regenerate(); // важно для безопасности
+            return redirect()->intended('/admin/dashboard'); // редирект на админку
         }
 
+        // Если данные неверны — возвращаем ошибку
         return back()->withErrors([
-            'email' => 'Неверный email или пароль',
+            'login_error' => 'Неверный email или пароль',
         ])->withInput($request->only('email'));
     }
 
-    public function logout()
+    // Выход
+    public function logout(Request $request)
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('admin.login');
     }
 }

@@ -3,7 +3,7 @@
 @section('content')
 <div class="app-content-header">
     <div class="container-fluid">
-        <h3>Детали отзыва #{{ $id }}</h3>
+        <h3>Детали отзыва #{{ $review->id }}</h3>
     </div>
 </div>
 
@@ -12,55 +12,40 @@
 
         <div class="card shadow-sm">
             <div class="card-body">
-
                 <div class="row">
 
-                    {{-- Левая часть: информация --}}
                     <div class="col-md-6">
                         <div class="mb-3">
                             <span class="text-muted">Пользователь</span>
-                            <h6 class="fw-bold">Иван Иванов</h6>
+                            <h6 class="fw-bold">{{ $review->user_name }}</h6>
                         </div>
 
                         <div class="mb-3">
                             <span class="text-muted">Товар</span>
-                            <h6 class="fw-bold">Товар 1</h6>
+                            <h6 class="fw-bold">{{ $review->product_name }}</h6>
                         </div>
 
                         <div class="mb-3">
                             <span class="text-muted">Отзыв</span>
-                            <div class="border rounded p-3 mt-1 bg-light">
-                                Очень понравилось!
+                            <div class="border rounded p-3 bg-light">
+                                {{ $review->content }}
                             </div>
                         </div>
                     </div>
 
-                    {{-- Правая часть: фото товара --}}
                     <div class="col-md-6 text-center">
                         <span class="text-muted d-block mb-2">Фото товара</span>
 
-                        <div
-                            style="
-                                width:200px;
-                                height:200px;
-                                background-color:#ddd;
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-weight:bold;
-                                color:#555;
-                                margin:0 auto;
-                                border-radius:8px;
-                            "
+                        <img
+                            src="{{ $review->product_image ?? 'https://via.placeholder.com/200' }}"
+                            style="width:200px;height:200px;object-fit:cover;border-radius:8px;"
                         >
-                            Фото
-                        </div>
                     </div>
 
                 </div>
 
                 <div class="mt-4">
-                    <a href="{{ url('admin/reviews') }}" class="btn btn-secondary">
+                    <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">
                         Назад к списку
                     </a>
                 </div>

@@ -20,24 +20,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Иван Иванов</td>
-                    <td>Товар 1</td>
-                    <td>Очень понравилось!</td>
-                    <td>
-                        <a href="{{ url('admin/reviews/show/1') }}" class="btn btn-sm btn-info">Просмотр</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Мария Петрова</td>
-                    <td>Товар 2</td>
-                    <td>Не соответствует описанию.</td>
-                    <td>
-                        <a href="{{ url('admin/reviews/show/2') }}" class="btn btn-sm btn-info">Просмотр</a>
-                    </td>
-                </tr>
+                @foreach($reviews as $review)
+                    <tr>
+                        <td>{{ $review->id }}</td>
+                        <td>{{ $review->user_name }}</td>
+                        <td>{{ $review->product_name }}</td>
+                        <td>{{ Str::limit($review->content, 40) }}</td>
+                        <td>
+                            <a href="{{ route('admin.reviews.show', $review) }}"
+                               class="btn btn-sm btn-info">
+                                Просмотр
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
