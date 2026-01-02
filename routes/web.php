@@ -84,7 +84,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/brands/edit/{brand}', [BrandController::class, 'edit'])->name('admin.brands.edit');
 
     // Обновление бренда
-    Route::post('/brands/update/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
+    Route::put('/brands/update/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
 
     // Удаление бренда
     Route::post('/brands/delete/{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
@@ -134,7 +134,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/promotions/create', [PromotionController::class, 'create'])->name('admin.promotions.create');
     Route::post('/promotions', [PromotionController::class, 'store'])->name('admin.promotions.store');
     Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');
-    Route::post('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
+    Route::put('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
     Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
 
 });
