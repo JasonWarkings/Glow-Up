@@ -11,12 +11,36 @@
     <div class="container-fluid">
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+
             <input class="form-control mb-2" name="title" placeholder="Название">
-            <input class="form-control mb-2" name="category" placeholder="Категория">
-            <input class="form-control mb-2" name="brand" placeholder="Бренд">
+
+            <select name="category" class="form-control mb-2">
+                <option value="">Выберите категорию</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->name }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+
+            <select name="brand" class="form-control mb-2">
+                <option value="">Выберите бренд</option>
+                @foreach($brands as $brand)
+                    <option value="{{ $brand->name }}">{{ $brand->name }}</option>
+                @endforeach
+            </select>
+
             <input class="form-control mb-2" name="price" type="number" placeholder="Цена">
-            <input class="form-control mb-2" name="discount" placeholder="Скидка">
+
+            <select name="discount" class="form-control mb-2">
+                <option value="">Нет акции</option>
+                @foreach($promotions as $promotion)
+                    <option value="{{ $promotion->discount }}">
+                        {{ $promotion->title }} – {{ $promotion->discount }}%
+                    </option>
+                @endforeach
+            </select>
+
             <input class="form-control mb-2" name="image" type="file">
+
             <button class="btn btn-primary">Добавить</button>
         </form>
     </div>

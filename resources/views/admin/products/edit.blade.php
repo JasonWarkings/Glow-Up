@@ -11,11 +11,36 @@
     <div class="container-fluid">
         <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <input class="form-control mb-2" name="title" value="{{ $product->title }}">
-            <input class="form-control mb-2" name="category" value="{{ $product->category }}">
-            <input class="form-control mb-2" name="brand" value="{{ $product->brand }}">
-            <input class="form-control mb-2" name="price" type="number" value="{{ $product->price }}">
-            <input class="form-control mb-2" name="discount" value="{{ $product->discount }}">
+            <input class="form-control mb-2" name="title" value="{{ $product->title }}" required>
+
+            <select name="category" class="form-control mb-2" required>
+                <option value="">Выберите категорию</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->name }}" @if($product->category == $category->name) selected @endif>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+
+            <select name="brand" class="form-control mb-2" required>
+                <option value="">Выберите бренд</option>
+                @foreach($brands as $brand)
+                    <option value="{{ $brand->name }}" @if($product->brand == $brand->name) selected @endif>
+                        {{ $brand->name }}
+                    </option>
+                @endforeach
+            </select>
+
+            <select name="discount" class="form-control mb-2">
+                <option value="">Нет акции</option>
+                @foreach($promotions as $promotion)
+                    <option value="{{ $promotion->discount }}" @if($product->discount == $promotion->discount) selected @endif>
+                        {{ $promotion->title }} ({{ $promotion->discount }}%)
+                    </option>
+                @endforeach
+            </select>
+
+            <input class="form-control mb-2" name="price" type="number" value="{{ $product->price }}" required>
             <input class="form-control mb-2" name="image" type="file">
 
             @if($product->image)
