@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReviewController;
 
 
 /*
@@ -116,12 +117,11 @@ Route::prefix('admin')->group(function () {
     | REVIEWS
     |--------------------------------------------------------------------------
     */
-    Route::get('/reviews', fn () => view('admin.reviews.index'))
-        ->name('admin.reviews');
-
-    Route::get('/reviews/show/{id}', fn ($id) => view('admin.reviews.show'))
-        ->name('admin.reviews.show');
-
+    Route::get('/reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])
+    ->name('admin.reviews.index');
+    
+    Route::get('/reviews/show/{review}', [\App\Http\Controllers\Admin\ReviewController::class, 'show'])
+    ->name('admin.reviews.show');
 
     /*
     |--------------------------------------------------------------------------
