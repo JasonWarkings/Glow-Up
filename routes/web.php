@@ -18,14 +18,10 @@ use App\Http\Controllers\Admin\PromotionController;
 |--------------------------------------------------------------------------
 */
 
-// Первая страница — логин
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('admin.login');
-
-// Отправка формы логина
 Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
-
-// Выход
 Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+
 
 
 /*
@@ -36,7 +32,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 Route::prefix('admin')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', function () {
+     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
 

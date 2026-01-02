@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <title>Glow-Up | Вход в админку</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap и иконки -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ asset('assets/css/adminlte.css') }}">
@@ -19,10 +18,15 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">Войдите, чтобы начать сеанс</p>
 
+            <!-- Ошибка -->
+            @if($errors->has('login_error'))
+                <div class="alert alert-danger">{{ $errors->first('login_error') }}</div>
+            @endif
+
             <form action="{{ route('admin.login.submit') }}" method="POST">
                 @csrf
                 <div class="input-group mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                 </div>
 
