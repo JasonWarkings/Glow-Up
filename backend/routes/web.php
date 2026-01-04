@@ -1,0 +1,136 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\PromotionController;
+
+
+
+/*
+|--------------------------------------------------------------------------
+| AUTH (LOGIN)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
+Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN PANEL
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin')->group(function () {
+
+    // Dashboard
+     Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUCTS (через контроллер)
+    |--------------------------------------------------------------------------
+    */
+     Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
+    Route::get('/products/edit/{product}', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::post('/products/update/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::post('/products/delete/{product}', [ProductController::class, 'destroy'])->name('admin.products.delete');
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | CATEGORIES
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::get('/categories/edit/{category}', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+    Route::post('/categories/update/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::post('/categories/delete/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.delete');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BRANDS
+    |--------------------------------------------------------------------------
+    */
+    // Список брендов
+    Route::get('/brands', [BrandController::class, 'index'])->name('admin.brands.index');
+
+    // Форма создания
+    Route::get('/brands/create', [BrandController::class, 'create'])->name('admin.brands.create');
+
+    // Сохранение нового бренда
+    Route::post('/brands', [BrandController::class, 'store'])->name('admin.brands.store');
+
+    // Форма редактирования
+    Route::get('/brands/edit/{brand}', [BrandController::class, 'edit'])->name('admin.brands.edit');
+
+    // Обновление бренда
+    Route::put('/brands/update/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
+
+    // Удаление бренда
+    Route::post('/brands/delete/{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | USERS
+    |--------------------------------------------------------------------------
+    */
+    
+   Route::get('/users', [AdminUserController::class, 'index'])
+        ->name('admin.users.index');
+
+    Route::post('/users/{adminUser}/status', [AdminUserController::class, 'updateStatus'])
+        ->name('admin.users.status');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ORDERS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/orders', [OrderController::class, 'index'])
+    ->name('admin.orders.index');
+    
+    Route::get('/orders/show/{order}', [OrderController::class, 'show'])
+    ->name('admin.orders.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | REVIEWS
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])
+    ->name('admin.reviews.index');
+    
+    Route::get('/reviews/show/{review}', [\App\Http\Controllers\Admin\ReviewController::class, 'show'])
+    ->name('admin.reviews.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROMOTIONS
+    |--------------------------------------------------------------------------
+    */
+      Route::get('/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
+    Route::get('/promotions/create', [PromotionController::class, 'create'])->name('admin.promotions.create');
+    Route::post('/promotions', [PromotionController::class, 'store'])->name('admin.promotions.store');
+    Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');
+    Route::put('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
+    Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
+
+});
