@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\CouponController;
 
 
 
@@ -132,5 +133,18 @@ Route::prefix('admin')->group(function () {
     Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');
     Route::put('/promotions/update/{promotion}', [PromotionController::class, 'update'])->name('admin.promotions.update');
     Route::post('/promotions/delete/{promotion}', [PromotionController::class, 'destroy'])->name('admin.promotions.delete');
+
+    /*
+    |--------------------------------------------------------------------------
+    | COUPONS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/coupons', [CouponController::class, 'index'])->name('admin.coupons.index');
+    Route::get('/coupons/create', [CouponController::class, 'create'])->name('admin.coupons.create');
+    Route::post('/coupons', [CouponController::class, 'store'])->name('admin.coupons.store');
+    Route::get('/coupons/edit/{coupon}', [CouponController::class, 'edit'])->name('admin.coupons.edit');
+    Route::put('/coupons/update/{coupon}', [CouponController::class, 'update'])->name('admin.coupons.update');
+    Route::post('/coupons/delete/{coupon}', [CouponController::class, 'destroy'])->name('admin.coupons.delete');
 
 });

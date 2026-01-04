@@ -119,6 +119,12 @@
                         <p>Акции и скидки</p>
                     </a></li>
 
+                    <a href="{{ url('admin/coupons') }}" class="nav-link">
+                        <i class="nav-icon bi bi-ticket-perforated"></i>
+                        <p>Промокоды</p>
+                    </a>
+
+
 
                 </ul>
             </nav>
