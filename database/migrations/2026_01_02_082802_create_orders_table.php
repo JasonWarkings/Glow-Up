@@ -8,15 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->string('customer_name');
-            $table->integer('items_count');
-            $table->integer('total_price');
-            $table->string('status')->default('processing'); 
-            $table->string('product_image')->nullable(); 
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('orders')) {
+            Schema::create('orders', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->integer('items_count')->default(0);
+                $table->integer('total_price')->default(0);
+                $table->string('status')->default('processing');
+                $table->timestamps();
+
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            });
+        }
     }
 
     public function down(): void
