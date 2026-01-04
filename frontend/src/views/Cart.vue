@@ -1,154 +1,93 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <main class="flex-grow">
+      <section class="max-w-4xl mx-auto px-4 py-12">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">
+          Корзина
+        </h1>
 
-    
-    <section class="max-w-7xl mx-auto px-4 py-12">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">🛒 Корзина</h1>
-      
-      <div v-if="cartEmpty" class="bg-white rounded-xl p-12 text-center">
-        <span class="text-6xl mb-4 block">🛍️</span>
-        <h2 class="text-2xl font-bold mb-4">Корзина пуста</h2>
-        <p class="text-gray-600 mb-6">Добавьте товары из каталога</p>
-        <router-link to="/catalog">
-          <button class="bg-pink-600 text-white px-8 py-3 rounded-full hover:bg-pink-700 transition font-medium">
-            Перейти в каталог
-          </button>
-        </router-link>
-      </div>
-
-      <div v-else class="grid lg:grid-cols-3 gap-6">
-        <!-- Товары -->
-        <div class="lg:col-span-2 space-y-4">
-          <div 
-            v-for="item in cartItems" 
-            :key="item.id"
-            class="bg-white rounded-xl p-6 shadow-md"
-          >
-            <div class="flex gap-4">
-              <div class="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span class="text-4xl">{{ item.icon }}</span>
-              </div>
-              <div class="flex-1">
-                <h3 class="font-bold text-lg mb-1">{{ item.name }}</h3>
-                <p class="text-sm text-gray-500 mb-2">{{ item.brand }}</p>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-3">
-                    <button 
-                      @click="decreaseQuantity(item.id)"
-                      class="w-8 h-8 bg-gray-200 rounded-full hover:bg-gray-300 transition"
-                    >
-                      -
-                    </button>
-                    <span class="font-semibold">{{ item.quantity }}</span>
-                    <button 
-                      @click="increaseQuantity(item.id)"
-                      class="w-8 h-8 bg-gray-200 rounded-full hover:bg-gray-300 transition"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xl font-bold text-pink-600">{{ item.price * item.quantity }} ₸</div>
-                    <button 
-                      @click="removeItem(item.id)"
-                      class="text-sm text-red-500 hover:text-red-700"
-                    >
-                      Удалить
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div v-if="cartItems.length === 0" class="text-center text-gray-600">
+          Корзина пуста
         </div>
 
-        <!-- Итого -->
-        <div class="lg:col-span-1">
-          <div class="bg-white rounded-xl p-6 sticky top-24">
-            <h3 class="font-bold text-xl mb-4">Итого</h3>
-            <div class="space-y-2 mb-4">
-              <div class="flex justify-between">
-                <span class="text-gray-600">Товары ({{ totalItems }} шт):</span>
-                <span class="font-semibold">{{ subtotal }} ₸</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Доставка:</span>
-                <span class="font-semibold">{{ deliveryCost }} ₸</span>
-              </div>
+        <div v-else>
+          <div v-for="item in cartItems" :key="item.id" class="flex items-center justify-between bg-white p-4 rounded-xl shadow mb-4">
+            <img :src="item.image ? '/storage/' + item.image : 'https://source.unsplash.com/100x100/?cosmetics'" class="w-24 h-24 object-cover rounded" />
+            <div class="flex-1 ml-4">
+              <h3 class="text-lg font-semibold">{{ item.title }}</h3>
+              <p class="text-gray-600">{{ item.brand }}</p>
+              <p class="text-pink-600 font-bold mt-1">{{ item.price }} ₸</p>
             </div>
-            <div class="border-t pt-4 mb-4">
-              <div class="flex justify-between text-xl font-bold">
-                <span>К оплате:</span>
-                <span class="text-pink-600">{{ total }} ₸</span>
-              </div>
+            <div class="flex items-center gap-2">
+              <button @click="decreaseQuantity(item.id)" class="px-2 py-1 bg-gray-200 rounded">-</button>
+              <span>{{ item.quantity }}</span>
+              <button @click="increaseQuantity(item.id)" class="px-2 py-1 bg-gray-200 rounded">+</button>
+              <button @click="removeItem(item.id)" class="ml-4 text-red-500">Удалить</button>
             </div>
-            <router-link to="/checkout">
-              <button class="w-full bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition font-medium mb-3">
-                Оформить заказ
-              </button>
-            </router-link>
-            <router-link to="/catalog">
-              <button class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition font-medium">
-                Продолжить покупки
-              </button>
-            </router-link>
+          </div>
+
+          <div class="text-right mt-6">
+            <p>Сумма: <span class="font-bold">{{ subtotal }} ₸</span></p>
+            <p>Доставка: <span class="font-bold">{{ deliveryCost }} ₸</span></p>
+            <p>Итого: <span class="font-bold">{{ total }} ₸</span></p>
           </div>
         </div>
-      </div>
-    </section>
-
+      </section>
+    </main>
   </div>
 </template>
 
 <script>
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
+import axios from "axios";
 
 export default {
-  name: 'Cart',
-  components: {
-    Header,
-    Footer
-  },
+  name: "Cart",
   data() {
     return {
-      cartEmpty: false,
-      cartItems: [
-        { id: 1, name: 'Увлажняющий крем La Roche-Posay', brand: 'La Roche-Posay', price: 2890, quantity: 1, icon: '✨' },
-        { id: 2, name: 'Тушь для ресниц Volume Million', brand: "L'Oréal Paris", price: 1490, quantity: 2, icon: '💄' },
-        { id: 3, name: 'Парфюмерная вода Bloom', brand: 'Gucci', price: 8990, quantity: 1, icon: '🌸' }
-      ]
-    }
+      cartItems: [],
+    };
+  },
+  mounted() {
+    this.fetchCart();
   },
   computed: {
     subtotal() {
-      return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+      return this.cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
     },
     deliveryCost() {
-      return this.subtotal >= 15000 ? 0 : 1500
+      return this.subtotal >= 15000 ? 0 : 1500;
     },
     total() {
-      return this.subtotal + this.deliveryCost
+      return this.subtotal + this.deliveryCost;
     },
-    totalItems() {
-      return this.cartItems.reduce((sum, item) => sum + item.quantity, 0)
-    }
   },
   methods: {
-    increaseQuantity(id) {
-      const item = this.cartItems.find(i => i.id === id)
-      if (item) item.quantity++
-    },
-    decreaseQuantity(id) {
-      const item = this.cartItems.find(i => i.id === id)
-      if (item && item.quantity > 1) item.quantity--
-    },
-    removeItem(id) {
-      this.cartItems = this.cartItems.filter(i => i.id !== id)
-      if (this.cartItems.length === 0) {
-        this.cartEmpty = true
+    async fetchCart() {
+      try {
+        const res = await axios.get("http://localhost:8000/api/cart");
+        this.cartItems = res.data;
+      } catch (e) {
+        console.error("Ошибка при получении корзины:", e);
       }
-    }
-  }
-}
+    },
+
+    async increaseQuantity(id) {
+      const item = this.cartItems.find(i => i.id === id);
+      await axios.post(`http://localhost:8000/api/cart/update/${id}`, { quantity: item.quantity + 1 });
+      this.fetchCart();
+    },
+
+    async decreaseQuantity(id) {
+      const item = this.cartItems.find(i => i.id === id);
+      if (item.quantity <= 1) return;
+      await axios.post(`http://localhost:8000/api/cart/update/${id}`, { quantity: item.quantity - 1 });
+      this.fetchCart();
+    },
+
+    async removeItem(id) {
+      await axios.delete(`http://localhost:8000/api/cart/remove/${id}`);
+      this.fetchCart();
+    },
+  },
+};
 </script>

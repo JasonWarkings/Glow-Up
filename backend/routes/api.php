@@ -31,12 +31,10 @@ Route::get('/bonuses', [ProfileApiController::class, 'bonuses']);
 
 /*
 |--------------------------------------------------------------------------
-| Корзина (работает без аутентификации, для теста user_id = 1)
+| Корзина (тестовый доступ без аутентификации, user_id = 1)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth:sanctum')->group(function() {
-    Route::get('/cart', [CartApiController::class, 'index']);
-    Route::post('/cart/add', [CartApiController::class, 'add']);
-    Route::post('/cart/update/{id}', [CartApiController::class, 'update']);
-    Route::delete('/cart/remove/{id}', [CartApiController::class, 'remove']);
-});
+Route::get('/cart', [CartApiController::class, 'index']);
+Route::post('/cart/add', [CartApiController::class, 'add']);
+Route::post('/cart/update/{id}', [CartApiController::class, 'update']);
+Route::delete('/cart/remove/{id}', [CartApiController::class, 'remove']);
