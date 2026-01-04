@@ -5,18 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Order extends Model
+class BonusHistory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'total_price',
-        'status'
+        'description',
+        'amount',
+        'type'
     ];
-
-    public function items()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
 }
