@@ -1,0 +1,12 @@
+.product-list {
+  display: flex;
+  gap: 20px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  width: 180px;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+}
