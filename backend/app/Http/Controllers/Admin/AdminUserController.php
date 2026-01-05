@@ -3,23 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminUserStatusRequest;
-use App\Models\AdminUser;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
 {
     public function index()
     {
-        $users = AdminUser::all();
+        $users = User::orderByDesc('id')->get();
         return view('admin.users.index', compact('users'));
     }
 
-    public function updateStatus(AdminUserStatusRequest $request, AdminUser $adminUser)
+    public function updateStatus(Request $request, User $user)
     {
-        $adminUser->update([
+        $request->validate([
+            'status' => 'required|in:active,banned',
+        ]);
+
+        $user->update([
             'status' => $request->status,
         ]);
 
-        return redirect()->back();
+        return back()->with('success', 'Статус обновлён');
     }
 }

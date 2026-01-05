@@ -3,37 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
-        'last_name',
         'email',
         'phone',
-        'birthday',
-        'gender',
-        'bonuses',
-        'password'
+        'password',
+        'status', // active или banned
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
-    public function addresses()
-    {
-        return $this->hasMany(Address::class);
-    }
-
-    public function bonusHistory()
-    {
-        return $this->hasMany(BonusHistory::class);
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 }

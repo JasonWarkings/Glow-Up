@@ -33,7 +33,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 Route::prefix('admin')->group(function () {
 
     // Dashboard
-     Route::get('/dashboard', function () {
+    Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
 
@@ -42,14 +42,14 @@ Route::prefix('admin')->group(function () {
     | PRODUCTS (через контроллер)
     |--------------------------------------------------------------------------
     */
-     Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
+    Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
     Route::get('/products/edit/{product}', [ProductController::class, 'edit'])->name('admin.products.edit');
     Route::post('/products/update/{product}', [ProductController::class, 'update'])->name('admin.products.update');
     Route::post('/products/delete/{product}', [ProductController::class, 'destroy'])->name('admin.products.delete');
 
-    
+
     /*
     |--------------------------------------------------------------------------
     | CATEGORIES
@@ -92,8 +92,8 @@ Route::prefix('admin')->group(function () {
     | USERS
     |--------------------------------------------------------------------------
     */
-    
-   Route::get('/users', [AdminUserController::class, 'index'])
+
+    Route::get('/users', [AdminUserController::class, 'index'])
         ->name('admin.users.index');
 
     Route::post('/users/{adminUser}/status', [AdminUserController::class, 'updateStatus'])
@@ -106,10 +106,10 @@ Route::prefix('admin')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/orders', [OrderController::class, 'index'])
-    ->name('admin.orders.index');
-    
+        ->name('admin.orders.index');
+
     Route::get('/orders/show/{order}', [OrderController::class, 'show'])
-    ->name('admin.orders.show');
+        ->name('admin.orders.show');
 
     /*
     |--------------------------------------------------------------------------
@@ -117,17 +117,17 @@ Route::prefix('admin')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::get('/reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])
-    ->name('admin.reviews.index');
-    
+        ->name('admin.reviews.index');
+
     Route::get('/reviews/show/{review}', [\App\Http\Controllers\Admin\ReviewController::class, 'show'])
-    ->name('admin.reviews.show');
+        ->name('admin.reviews.show');
 
     /*
     |--------------------------------------------------------------------------
     | PROMOTIONS
     |--------------------------------------------------------------------------
     */
-      Route::get('/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
+    Route::get('/promotions', [PromotionController::class, 'index'])->name('admin.promotions.index');
     Route::get('/promotions/create', [PromotionController::class, 'create'])->name('admin.promotions.create');
     Route::post('/promotions', [PromotionController::class, 'store'])->name('admin.promotions.store');
     Route::get('/promotions/edit/{promotion}', [PromotionController::class, 'edit'])->name('admin.promotions.edit');

@@ -445,11 +445,17 @@ export default {
       alert('Профиль сохранен!')
     },
     logout() {
-      if (confirm('Вы действительно хотите выйти?')) {
-        this.isLoggedIn = false
-        this.$router.push('/')
-      }
+      // 1. Удаляем токен и данные пользователя
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+
+      // 2. Редирект на главную или логин
+      this.$router.push('/login')
+
+      // 3. (Опционально) уведомление
+      alert('Вы вышли из аккаунта')
     }
+
   }
 }
 </script>

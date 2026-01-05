@@ -23,18 +23,32 @@ class ProductController extends Controller
         $categories = Category::all();
         $brands = Brand::all();
         $promotions = Promotion::all();
-        return view('admin.products.create', compact('categories', 'brands', 'promotions'));
+
+        return view('admin.products.create', compact(
+            'categories',
+            'brands',
+            'promotions'
+        ));
     }
 
     public function store(Request $request)
     {
-        $data = $request->all();
+        $data = $request->validate([
+            'title'    => 'required|string|max:255',
+            'brand'    => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'price'    => 'required|numeric',
+            'discount' => 'nullable|numeric',
+            'image'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
+            $data['image'] = $request->file('image')
+                ->store('products', 'public');
         }
 
         Product::create($data);
+
         return redirect()->route('admin.products.index');
     }
 
@@ -43,19 +57,37 @@ class ProductController extends Controller
         $categories = Category::all();
         $brands = Brand::all();
         $promotions = Promotion::all();
-        return view('admin.products.edit', compact('product', 'categories', 'brands', 'promotions'));
+
+        return view('admin.products.edit', compact(
+            'product',
+            'categories',
+            'brands',
+            'promotions'
+        ));
     }
 
     public function update(Request $request, Product $product)
     {
-        $data = $request->all();
+        $data = $request->validate([
+            'title'    => 'required|string|max:255',
+            'brand'    => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'price'    => 'required|numeric',
+            'discount' => 'nullable|numeric',
+            'image'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
         if ($request->hasFile('image')) {
-            Storage::disk('public')->delete($product->image);
-            $data['image'] = $request->file('image')->store('products', 'public');
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $data['image'] = $request->file('image')
+                ->store('products', 'public');
         }
 
         $product->update($data);
+
         return redirect()->route('admin.products.index');
     }
 
@@ -64,7 +96,9 @@ class ProductController extends Controller
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
+
         $product->delete();
+
         return redirect()->route('admin.products.index');
     }
 }
