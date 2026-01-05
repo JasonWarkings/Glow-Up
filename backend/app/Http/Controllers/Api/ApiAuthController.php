@@ -4,32 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class ApiAuthController extends Controller
 {
-    // Регистрация
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:6',
-        ]);
-
-        $user = User::create($request->all());
-
-        $token = $user->createToken('api_token')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token
-        ]);
-    }
-
-    // Логин
+    // Логин пользователя
     public function login(Request $request)
     {
         $request->validate([
@@ -37,29 +17,47 @@ class ApiAuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Неверные данные'], 401);
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Неверный email или пароль'
+            ], 401);
         }
 
-        $user = Auth::user();
-        $token = $user->createToken('api_token')->plainTextToken;
+        // Создание токена для API
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
-            'token' => $token
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ]
         ]);
     }
 
-    // Логаут
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Выход выполнен']);
-    }
-
-    // Текущий пользователь
+    // Получение данных текущего пользователя
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+        ]);
+    }
+
+    // Логаут пользователя
+    public function logout(Request $request)
+    {
+        // Удаляем текущий токен
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Вы вышли из аккаунта'
+        ]);
     }
 }

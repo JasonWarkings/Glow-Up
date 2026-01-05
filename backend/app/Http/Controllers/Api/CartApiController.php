@@ -9,15 +9,18 @@ use App\Models\Product;
 
 class CartApiController extends Controller
 {
+    // TODO: заменить на Auth::id() после настройки аутентификации
     private function getUserId()
     {
-        return 1; // временно тестовый пользователь, замените на Auth::id() при авторизации
+        return 1; // временный тестовый пользователь
     }
 
     // Получить корзину
     public function index()
     {
         $userId = $this->getUserId();
+
+        // Берем все товары пользователя с продуктами
         $cartItems = Cart::where('user_id', $userId)->with('product')->get();
 
         $data = $cartItems->map(function($item){
@@ -28,7 +31,9 @@ class CartApiController extends Controller
                 'brand' => $item->product->brand,
                 'price' => $item->product->price,
                 'quantity' => $item->quantity,
+                'total' => $item->product->price * $item->quantity, // сразу итоговая цена
                 'image' => $item->product->image ? asset('storage/' . $item->product->image) : null,
+                'extra_delivery' => 0 // можно потом добавить плюсы к доставке
             ];
         });
 
@@ -38,54 +43,69 @@ class CartApiController extends Controller
     // Добавить товар в корзину
     public function add(Request $request)
     {
-        try {
-            $request->validate([
-                'product_id' => 'required|exists:products,id'
+        $request->validate(['product_id' => 'required|exists:products,id']);
+
+        $userId = $this->getUserId();
+        $productId = $request->product_id;
+
+        // Проверяем, есть ли уже этот товар в корзине
+        $cartItem = Cart::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->quantity += 1;
+            $cartItem->save();
+        } else {
+            $cartItem = Cart::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'quantity' => 1,
             ]);
-
-            $userId = $this->getUserId();
-            $productId = $request->product_id;
-
-            $cartItem = Cart::where('user_id', $userId)->where('product_id', $productId)->first();
-            if ($cartItem) {
-                $cartItem->quantity += 1;
-                $cartItem->save();
-            } else {
-                $cartItem = Cart::create([
-                    'user_id' => $userId,
-                    'product_id' => $productId,
-                    'quantity' => 1,
-                ]);
-            }
-
-            return response()->json($cartItem, 201);
-
-        } catch (\Exception $e) {
-            \Log::error('Ошибка добавления в корзину: '.$e->getMessage(), $request->all());
-            return response()->json(['error' => $e->getMessage()], 500);
         }
+
+        // Возвращаем полный объект для фронта
+        return response()->json([
+            'id' => $cartItem->id,
+            'product_id' => $cartItem->product_id,
+            'name' => $cartItem->product->title,
+            'brand' => $cartItem->product->brand,
+            'price' => $cartItem->product->price,
+            'quantity' => $cartItem->quantity,
+            'total' => $cartItem->product->price * $cartItem->quantity,
+            'image' => $cartItem->product->image ? asset('storage/' . $cartItem->product->image) : null,
+            'extra_delivery' => 0
+        ], 201);
     }
 
-    // Обновить количество
+    // Обновить количество товара
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1'
-        ]);
+        $request->validate(['quantity' => 'required|integer|min:1']);
 
         $cartItem = Cart::findOrFail($id);
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
-        return response()->json($cartItem);
+        return response()->json([
+            'id' => $cartItem->id,
+            'product_id' => $cartItem->product_id,
+            'name' => $cartItem->product->title,
+            'brand' => $cartItem->product->brand,
+            'price' => $cartItem->product->price,
+            'quantity' => $cartItem->quantity,
+            'total' => $cartItem->product->price * $cartItem->quantity,
+            'image' => $cartItem->product->image ? asset('storage/' . $cartItem->product->image) : null,
+            'extra_delivery' => 0
+        ]);
     }
 
-    // Удалить товар
+    // Удалить товар из корзины
     public function remove($id)
     {
         $cartItem = Cart::findOrFail($id);
         $cartItem->delete();
 
-        return response()->json(['message' => 'Удалено']);
+        return response()->json(['message' => 'Товар удален из корзины']);
     }
 }

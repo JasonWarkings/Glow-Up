@@ -4,67 +4,74 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\Order;
 use App\Models\Address;
 
 class ProfileApiController extends Controller
 {
-    public function user(Request $request)
+    // Заказы пользователя
+    public function orders(Request $request)
     {
-        return response()->json(Auth::user());
+        $user = $request->user();
+
+        $orders = Order::with('items')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->filter(function($order) {
+                // Оставляем только заказы, у которых есть хотя бы один товар с названием
+                return $order->items->whereNotNull('title')->where('title', '!=', '')->count() > 0;
+            })
+            ->map(function($order) {
+                return [
+                    'id' => $order->id,
+                    'date' => $order->created_at->format('d F Y'),
+                    'status' => $order->status,
+                    'statusText' => $this->getStatusText($order->status),
+                    'total' => $order->total_price,
+                    'itemsCount' => $order->items->sum('quantity'),
+                    'items' => $order->items->whereNotNull('title')->where('title', '!=', '')->map(function($item){
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->title,
+                            'brand' => $item->brand,
+                            'price' => $item->price,
+                            'quantity' => $item->quantity,
+                            'icon' => '🛍️'
+                        ];
+                    })->values(),
+                ];
+            })->values();
+
+        return response()->json($orders);
     }
 
-    public function updateUser(Request $request)
+    // Адреса пользователя
+    public function addresses(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
 
-        $user->update([
-            'name'  => $request->input('name', $user->name),
-            'email' => $request->input('email', $user->email),
-        ]);
+        $addresses = Address::where('user_id', $user->id)
+            ->whereNotNull('title')
+            ->where('title', '!=', '')
+            ->whereNotNull('city')
+            ->where('city', '!=', '')
+            ->orderBy('is_default', 'desc')
+            ->get()
+            ->values();
 
-        return response()->json($user);
+        return response()->json($addresses);
     }
 
-    public function orders()
+    // Статус заказа
+    private function getStatusText($status)
     {
-        return response()->json(
-            Order::where('user_id', Auth::id())->get()
-        );
-    }
-
-    public function addresses()
-    {
-        return response()->json(
-            Address::where('user_id', Auth::id())->get()
-        );
-    }
-
-    public function addAddress(Request $request)
-    {
-        $address = Address::create([
-            'user_id' => Auth::id(),
-            'address' => $request->address,
-        ]);
-
-        return response()->json($address);
-    }
-
-    public function deleteAddress($id)
-    {
-        Address::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->delete();
-
-        return response()->json(['status' => 'ok']);
-    }
-
-    public function bonuses()
-    {
-        return response()->json([
-            'bonuses' => Auth::user()->bonuses ?? 0
-        ]);
+        return match($status) {
+            'delivered' => 'Доставлен',
+            'processing' => 'В обработке',
+            'shipping' => 'В пути',
+            'cancelled' => 'Отменен',
+            default => 'Неизвестно',
+        };
     }
 }

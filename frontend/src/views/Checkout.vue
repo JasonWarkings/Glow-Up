@@ -74,8 +74,7 @@
                   v-for="delivery in deliveryMethods"
                   :key="delivery.id"
                   class="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition"
-                  :class="orderForm.delivery === delivery.id ? 'border-pink-500 bg-pink-50' : 'border-gray-200 hover:border-pink-300'"
-              >
+                  :class="orderForm.delivery === delivery.id ? 'border-pink-500 bg-pink-50' : 'border-gray-200 hover:border-pink-300'">
                 <input
                     v-model="orderForm.delivery"
                     type="radio" :value="delivery.id" class="mt-1"
@@ -93,7 +92,7 @@
           </div>
 
           <!-- Адрес доставки -->
-          <div v-if="orderForm.delivery !== 'pickup'" class="bg-white rounded-xl p-6 shadow-md">
+          <div v-if="orderForm.delivery !== 'pickup' && orderForm.delivery !== 'store'" class="bg-white rounded-xl p-6 shadow-md">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
               <span>📍</span> Адрес доставки
             </h2>
@@ -189,7 +188,9 @@
                 Применить
               </button>
             </div>
-            <p v-if="promoApplied" class="text-green-600 text-sm mt-2">✓ Промокод применен! Скидка 10%</p>
+            <p v-if="promoApplied" class="text-green-600 text-sm mt-2">
+              ✓ Промокод применен! Скидка {{ discountValue }}%
+            </p>
           </div>
         </div>
 
@@ -288,6 +289,7 @@ export default {
       },
       promoCode: '',
       promoApplied: false,
+      discountValue: 0,
       cartItems: [],
       deliveryMethods: [
         { id: 'courier', name: 'Курьерская доставка', price: 1500, description: 'Доставка по городу', time: '1-2 дня' },
@@ -306,13 +308,13 @@ export default {
     }
   },
   mounted() {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     if (!token) {
-      alert('Для доступа к этой странице необходимо войти')
-      this.$router.push('/login')
-      return
+      alert('Для доступа к этой странице необходимо войти');
+      this.$router.push('/login');
+      return;
     }
-    this.fetchCart()
+    this.fetchCart();
   },
   computed: {
     subtotal() {
@@ -320,10 +322,12 @@ export default {
     },
     deliveryCost() {
       const method = this.deliveryMethods.find(d => d.id === this.orderForm.delivery);
-      return method ? (this.subtotal >= 15000 ? 0 : method.price) : 0;
+      if (!method) return 0;
+      if (this.subtotal >= 15000 && method.price > 0) return 0;
+      return method.price + (method.extra || 0);
     },
     discount() {
-      return this.promoApplied ? Math.round(this.subtotal * 0.1) : 0;
+      return this.promoApplied ? Math.round(this.subtotal * (this.discountValue / 100)) : 0;
     },
     total() {
       return this.subtotal + this.deliveryCost - this.discount;
@@ -347,11 +351,19 @@ export default {
         console.error("Ошибка при получении корзины:", e);
       }
     },
-    applyPromoCode() {
-      if (this.promoCode.toLowerCase() === 'glowup10') {
+    async applyPromoCode() {
+      if (!this.promoCode) return;
+
+      try {
+        const res = await axios.post(`${this.apiBase}/api/coupons/check`, { code: this.promoCode });
         this.promoApplied = true;
-      } else {
-        alert('Неверный промокод');
+        this.discountValue = res.data.discount;
+        alert(`Промокод "${res.data.code}" применен! Скидка ${res.data.discount}%`);
+      } catch (e) {
+        this.promoApplied = false;
+        this.discountValue = 0;
+        alert(e.response?.data?.message || 'Ошибка при применении промокода');
+        console.error(e.response?.data || e);
       }
     },
     async submitOrder() {
@@ -363,6 +375,9 @@ export default {
         await axios.post(`${this.apiBase}/api/orders`, {
           ...this.orderForm,
           cart: this.cartItems,
+          deliveryCost: this.deliveryCost,
+          total: this.total,
+          discount: this.discount,
           promo: this.promoApplied ? this.promoCode : null
         });
         alert(`Заказ оформлен! Сумма: ${this.total} ₸`);
