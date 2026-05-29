@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProfileApiController;
 use App\Http\Controllers\Api\CartApiController;
 use App\Http\Controllers\Api\CouponApiController;
 use App\Http\Controllers\Api\ApiAuthController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // addresses
     Route::get('/addresses', [ProfileApiController::class, 'addresses']);
     Route::post('/addresses', [ProfileApiController::class, 'addAddress']);
+    Route::put('/addresses/{id}', [ProfileApiController::class, 'updateAddress']);
     Route::delete('/addresses/{id}', [ProfileApiController::class, 'deleteAddress']);
 
     // bonuses

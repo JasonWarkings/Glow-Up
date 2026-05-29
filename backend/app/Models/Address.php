@@ -16,6 +16,7 @@ class Address extends Model
         'street',
         'house',
         'apartment',
+        'comment',
         'is_default'
     ];
 }
