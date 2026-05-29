@@ -19,8 +19,8 @@
             </thead>
             <tbody>
             @forelse($users as $user)
-                <tr class="{{ $user->status === 'banned' ? 'table-danger' : '' }}">
-                    <td>{{ $user->id }}</td>
+                <tr class="{{ $user->status !== 'active' ? 'table-danger' : '' }}">
+                <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>
