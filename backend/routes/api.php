@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addresses', [ProfileApiController::class, 'addAddress']);
     Route::put('/addresses/{id}', [ProfileApiController::class, 'updateAddress']);
     Route::delete('/addresses/{id}', [ProfileApiController::class, 'deleteAddress']);
+    Route::post('/user/change-password', [ProfileApiController::class, 'changePassword']);
 
     // bonuses
     Route::get('/bonuses', [ProfileApiController::class, 'bonuses']);

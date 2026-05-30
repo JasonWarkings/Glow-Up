@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Address;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileApiController extends Controller
 {
@@ -36,7 +38,7 @@ class ProfileApiController extends Controller
     $address->update($validated);
 
     return response()->json($address);
-}
+    }
     public function addAddress(Request $request)
 {
     $user = $request->user();
@@ -69,7 +71,22 @@ class ProfileApiController extends Controller
     ]);
 
     return response()->json($address);
-}
+    }
+
+    public function deleteAddress(Request $request, $id)
+    {
+        $user = $request->user();
+
+        $address = Address::where('user_id', $user->id)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $address->delete();
+
+        return response()->json([
+            'message' => 'Адрес удален'
+        ]);
+    }
     // Заказы пользователя
     public function orders(Request $request)
     {
@@ -108,29 +125,29 @@ class ProfileApiController extends Controller
     }
 
     // Адреса пользователя
-public function addresses(Request $request)
-{
-    $user = $request->user();
+    public function addresses(Request $request)
+    {
+        $user = $request->user();
 
-    $addresses = Address::where('user_id', $user->id)
-        ->orderBy('is_default', 'desc')
-        ->get()
-        ->map(function ($a) {
-            return [
-                'id' => $a->id,
-                'title' => $a->title,
-                'city' => $a->city,
-                'street' => $a->street,
-                'house' => $a->house,
-                'apartment' => $a->apartment,
-                'comment' => $a->comment,
-                'is_default' => (bool) $a->is_default,
-            ];
-        })
-        ->values();
+        $addresses = Address::where('user_id', $user->id)
+            ->orderBy('is_default', 'desc')
+            ->get()
+            ->map(function ($a) {
+                return [
+                    'id' => $a->id,
+                    'title' => $a->title,
+                    'city' => $a->city,
+                    'street' => $a->street,
+                    'house' => $a->house,
+                    'apartment' => $a->apartment,
+                    'comment' => $a->comment,
+                    'is_default' => (bool) $a->is_default,
+                ];
+            })
+            ->values();
 
-    return response()->json($addresses);
-}
+        return response()->json($addresses);
+    }
 
         // Обновление профиля
     public function updateUser(Request $request)
@@ -138,13 +155,30 @@ public function addresses(Request $request)
         $user = $request->user();
 
         $validated = $request->validate([
-            'name' => 'nullable|string|max:255',
-            'lastName' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:255',
-            'birthday' => 'nullable|date',
-            'gender' => 'nullable|string|max:50',
+            'name' => ['nullable', 'string', 'max:255'],
+            'lastName' => ['nullable', 'string', 'max:255'],
+
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id),
+            ],
+
+            'phone' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('users')->ignore($user->id), // если хочешь уникальный телефон тоже
+            ],
+
+            'birthday' => ['nullable', 'date'],
+            'gender' => ['nullable', 'in:male,female'],
         ]);
+
+            if (isset($validated['email']) && $validated['email'] !== $user->email) {
+
+            }
 
         $user->update($validated);
 
@@ -183,5 +217,30 @@ public function addresses(Request $request)
             'cancelled' => 'Отменен',
             default => 'Неизвестно',
         };
+    }
+    public function changePassword(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'string', 'min:6'],
+        ]);
+
+        // проверка текущего пароля
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'message' => 'Текущий пароль неверный'
+            ], 422);
+        }
+
+        // обновление
+        $user->update([
+            'password' => Hash::make($validated['new_password'])
+        ]);
+
+        return response()->json([
+            'message' => 'Пароль успешно изменен'
+        ]);
     }
 }
