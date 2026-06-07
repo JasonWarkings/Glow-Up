@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\AdminUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,6 +22,14 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
+
+        AdminUser::firstOrCreate(
+        ['email' => $request->email],
+        [
+            'name'   => $request->name,
+            'status' => 'active',
+        ]
+    );
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
