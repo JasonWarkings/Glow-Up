@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CartApiController;
 use App\Http\Controllers\Api\CouponApiController;
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\PartnerAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,11 @@ Route::get('/test123', function () {
 
 Route::post('/register', [ApiAuthController::class, 'register']);
 Route::post('/login', [ApiAuthController::class, 'login']);
+
+// ---------- PARTNERS ----------
+
+Route::post('/partner/register', [PartnerAuthController::class, 'register']);
+Route::post('/partner/login', [PartnerAuthController::class, 'login']);
 
 // ---------- PUBLIC ----------
 
