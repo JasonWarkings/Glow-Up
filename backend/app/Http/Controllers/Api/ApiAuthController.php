@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdminUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,7 +18,7 @@ class ApiAuthController extends Controller
             'phone'    => 'nullable|string',
         ]);
 
-        $user = AdminUser::create([
+        $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'phone'    => $request->phone,
@@ -42,7 +42,7 @@ class ApiAuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = AdminUser::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
