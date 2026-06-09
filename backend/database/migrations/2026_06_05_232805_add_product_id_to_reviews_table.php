@@ -9,8 +9,10 @@ return new class extends Migration
    public function up(): void
 {
     Schema::table('reviews', function (Blueprint $table) {
-        $table->unsignedBigInteger('product_id')->nullable()->after('id');
-        $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+        if (!Schema::hasColumn('reviews', 'product_id')) {
+            $table->unsignedBigInteger('product_id')->nullable()->after('id');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+        }
     });
 }
 

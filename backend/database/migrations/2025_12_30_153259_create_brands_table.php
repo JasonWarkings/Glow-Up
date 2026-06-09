@@ -10,7 +10,8 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+{
+    if (!Schema::hasTable('brands')) {
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+}
 
     /**
      * Reverse the migrations.

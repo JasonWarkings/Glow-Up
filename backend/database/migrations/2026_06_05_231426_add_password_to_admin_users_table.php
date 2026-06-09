@@ -9,9 +9,19 @@ return new class extends Migration
    public function up(): void
 {
     Schema::table('admin_users', function (Blueprint $table) {
-        $table->string('phone')->nullable()->after('email');
-        $table->string('password')->after('phone');
-        $table->rememberToken()->after('password');
+
+        if (!Schema::hasColumn('admin_users', 'phone')) {
+            $table->string('phone')->nullable()->after('email');
+        }
+
+        if (!Schema::hasColumn('admin_users', 'password')) {
+            $table->string('password')->after('phone');
+        }
+
+        if (!Schema::hasColumn('admin_users', 'remember_token')) {
+            $table->rememberToken()->after('password');
+        }
+
     });
 }
 
