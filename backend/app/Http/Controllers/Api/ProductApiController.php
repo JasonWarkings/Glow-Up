@@ -12,14 +12,15 @@ class ProductApiController extends Controller
     public function index()
     {
         $products = Product::all()->map(function($product) {
-            return [
-                'id' => $product->id,
-                'title' => $product->title,
-                'brand' => $product->brand,
-                'price' => $product->price,
-                'image' => $product->image,
-                'description' => $product->description ?? '',
-            ];
+        return [
+            'id' => $product->id,
+            'title' => $product->title,
+            'brand' => $product->brand,
+            'category' => $product->category,
+            'price' => $product->price,
+            'image' => $product->image,
+            'description' => $product->description ?? '',
+        ];
         });
 
         return response()->json($products);
@@ -34,6 +35,7 @@ class ProductApiController extends Controller
             'id' => $product->id,
             'title' => $product->title,
             'brand' => $product->brand,
+            'category' => $product->category,
             'price' => $product->price,
             'image' => $product->image,
             'description' => $product->description ?? '',
