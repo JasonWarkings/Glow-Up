@@ -35,6 +35,9 @@ Route::post('/login', [ApiAuthController::class, 'login']);
 
 Route::post('/partner/register', [PartnerAuthController::class, 'register']);
 Route::post('/partner/login', [PartnerAuthController::class, 'login']);
+Route::post('/partner/products', [ProductApiController::class, 'store']); 
+Route::get('/partner/products', [ProductApiController::class, 'partnerIndex']);
+Route::delete('/partner/products/{id}', [ProductApiController::class, 'destroy']);
 
 // ---------- PUBLIC ----------
 

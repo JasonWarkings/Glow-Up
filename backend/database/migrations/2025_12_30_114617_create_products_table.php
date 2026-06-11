@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('discount')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
+            $table->unsignedBigInteger('partner_id')->nullable()->after('id');
         });
     }
 

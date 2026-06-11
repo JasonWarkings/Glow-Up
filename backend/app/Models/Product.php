@@ -15,6 +15,8 @@ class Product extends Model
         'category',
         'price',
         'discount',
-        'image'
+        'image',
+        'description',
+        'partner_id', 
     ];
 }
