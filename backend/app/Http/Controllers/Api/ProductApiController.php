@@ -99,4 +99,22 @@ public function destroy($id)
     return response()->json(['message' => 'Товар удалён']);
 }
 
+public function update(Request $request, $id)
+{
+    $product = Product::findOrFail($id);
+
+    $data = $request->only(['title', 'brand', 'category', 'price', 'description']);
+
+    if ($request->hasFile('image')) {
+        if ($product->image) {
+            Storage::disk('public')->delete($product->image);
+        }
+        $data['image'] = $request->file('image')->store('products', 'public');
+    }
+
+    $product->update($data);
+
+    return response()->json(['message' => 'Товар обновлён', 'product' => $product]);
+}
+
 }
