@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CouponApiController;
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\PartnerAuthController;
+use App\Http\Controllers\Api\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,8 @@ Route::match(['POST', 'PUT'], '/partner/products/{id}', [ProductApiController::c
 // products
 Route::get('/products', [ProductApiController::class, 'index']);
 Route::get('/products/{id}', [ProductApiController::class, 'show']);
+// categories
+Route::get('/categories', [CategoryController::class, 'index']);
 
 // cart
 Route::get('/cart', [CartApiController::class, 'index']);
