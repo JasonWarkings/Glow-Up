@@ -38,8 +38,13 @@ class ProductController extends Controller
             'brand'    => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'price'    => 'required|numeric',
-            'discount' => 'nullable|numeric',
             'image'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
+            'discount_active' => 'nullable|boolean',
+            'discount_price'  => 'nullable|numeric',
+            'discount_percent'=> 'nullable|integer|min:1|max:100',
+            'discount_start'  => 'nullable|date',
+            'discount_end'    => 'nullable|date',
         ]);
 
         if ($request->hasFile('image')) {
@@ -73,8 +78,13 @@ class ProductController extends Controller
             'brand'    => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'price'    => 'required|numeric',
-            'discount' => 'nullable|numeric',
             'image'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
+            'discount_active' => 'nullable|boolean',
+            'discount_price'  => 'nullable|numeric',
+            'discount_percent'=> 'nullable|integer|min:1|max:100',
+            'discount_start'  => 'nullable|date',
+            'discount_end'    => 'nullable|date',
         ]);
 
         if ($request->hasFile('image')) {
