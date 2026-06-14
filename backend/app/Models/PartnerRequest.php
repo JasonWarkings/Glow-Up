@@ -5,21 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Promotion extends Model
+class PartnerRequest extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
+        'name',
+        'email',
+        'password',
         'description',
-        'discount',
-        'category',
+        'logo',
+        'status',
     ];
-
-    public function promotions()
-{
-    return $this->belongsToMany(Promotion::class);
 }
-}
-
-

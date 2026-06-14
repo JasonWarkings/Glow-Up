@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\PartnerRequest;
+use App\Models\Partner;
 
 class PartnerAuthController extends Controller
 {
@@ -13,30 +14,30 @@ class PartnerAuthController extends Controller
     {
         $request->validate([
             'name'        => 'required|string|max:255',
-            'email'       => 'required|email|unique:partner_requests,email', // ← исправлено
+            'email'       => 'required|email|unique:partner_requests,email',
             'password'    => 'required|min:6',
             'description' => 'nullable|string',
             'logo'        => 'nullable|image|max:2048',
         ]);
 
         $logoPath = null;
+
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('partners', 'public');
         }
 
-        $partner = Partner::create([
+        PartnerRequest::create([
             'name'        => $request->name,
             'email'       => $request->email,
-            'password'    => Hash::make($request->password),
+            'password'    => bcrypt($request->password),
             'description' => $request->description,
             'logo'        => $logoPath,
-            'status'      => 'pending'
+            'status'      => 'pending',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Заявка отправлена на рассмотрение',
-            'partner' => $partner
+            'message' => 'Заявка отправлена на рассмотрение'
         ], 201);
     }
 

@@ -72,4 +72,18 @@ class Product extends Model
         return $price;
     }
 
+    public function partner()
+        {
+            return $this->belongsTo(Partner::class);    
+        }
+
+    public function promotions()
+        {
+            return $this->belongsToMany(Promotion::class);
+        }
+
+    public function reviews()
+        {
+            return $this->hasMany(Review::class);
+        }
 }

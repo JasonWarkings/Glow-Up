@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\PartnerAuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\PromotionApiController;
+use App\Http\Controllers\Admin\PartnerRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,10 +38,7 @@ Route::post('/login', [ApiAuthController::class, 'login']);
 
 Route::post('/partner/register', [PartnerAuthController::class, 'register']);
 Route::post('/partner/login', [PartnerAuthController::class, 'login']);
-Route::post('/partner/products', [ProductApiController::class, 'store']); 
-Route::get('/partner/products', [ProductApiController::class, 'partnerIndex']);
-Route::delete('/partner/products/{id}', [ProductApiController::class, 'destroy']);
-Route::match(['POST', 'PUT'], '/partner/products/{id}', [ProductApiController::class, 'update']);
+
 
 // ---------- PUBLIC ----------
 
@@ -55,7 +54,17 @@ Route::post('/cart/add', [CartApiController::class, 'add']);
 Route::post('/cart/update/{id}', [CartApiController::class, 'update']);
 Route::delete('/cart/remove/{id}', [CartApiController::class, 'remove']);
 
+
+Route::get('/promotions', [PromotionApiController::class, 'index']);
+Route::get('/promotions/{id}', [PromotionApiController::class, 'show']);
+
 // ---------- PROTECTED ----------
+
+    Route::post('/partner/products', [ProductApiController::class, 'store']);
+    Route::get('/partner/products', [ProductApiController::class, 'partnerIndex']);
+    Route::delete('/partner/products/{id}', [ProductApiController::class, 'destroy']);
+    Route::match(['POST', 'PUT'], '/partner/products/{id}', [ProductApiController::class, 'update']);
+    
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -81,5 +90,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // coupons
     Route::post('/coupons/check', [CouponApiController::class, 'check']);
+
+
+
+
+}); 
+
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+
+    Route::get('/partner-requests', [PartnerRequestController::class, 'index']);
+    Route::post('/partner-requests/{id}/approve', [PartnerRequestController::class, 'approve']);
+    Route::post('/partner-requests/{id}/reject', [PartnerRequestController::class, 'reject']);
 
 });
