@@ -50,6 +50,9 @@ class PartnerAuthController extends Controller
 
         $partner = Partner::where('email', $request->email)->first();
 
+        $token = $partner->createToken('partner_token')->plainTextToken;
+
+
         if (!$partner) {
             return response()->json(['message' => 'Партнер не найден'], 404);
         }
@@ -69,7 +72,9 @@ class PartnerAuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Вход выполнен',
-            'partner' => $partner
+            'partner' => $partner,
+            'token' => $token,
         ]);
+        
     }
 }

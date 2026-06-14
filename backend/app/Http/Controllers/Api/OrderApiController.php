@@ -9,38 +9,13 @@ use App\Models\Order;
 class OrderApiController extends Controller
 {
     // Получить все заказы текущего пользователя
-    public function index(Request $request)
-    {
-        // Для примера используем user_id = 1
-        $userId = 1;
-
-        $orders = Order::with('items')
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function($order) {
-                return [
-                    'id' => $order->id,
-                    'date' => $order->created_at->format('d F Y'),
-                    'status' => $order->status,
-                    'statusText' => $this->getStatusText($order->status),
-                    'total' => $order->total,
-                    'itemsCount' => $order->items->sum('quantity'),
-                    'items' => $order->items->map(function($item){
-                        return [
-                            'id' => $item->id,
-                            'name' => $item->name,
-                            'brand' => $item->brand,
-                            'price' => $item->price,
-                            'quantity' => $item->quantity,
-                            'icon' => '✨', // можно заменить на image, если есть картинка
-                        ];
-                    })
-                ];
-            });
-
-        return response()->json($orders);
-    }
+public function index(Request $request)
+{
+    return response()->json([
+        'user' => $request->user(),
+        'user_id' => $request->user()?->id,
+    ]);
+}
 
     private function getStatusText($status)
     {

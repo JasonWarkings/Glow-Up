@@ -96,30 +96,28 @@ class ProfileApiController extends Controller
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->get()
-            ->filter(function($order) {
-                // Оставляем только заказы, у которых есть хотя бы один товар с названием
-                return $order->items->whereNotNull('title')->where('title', '!=', '')->count() > 0;
-            })
-            ->map(function($order) {
+            ->map(function ($order) {
+
                 return [
                     'id' => $order->id,
-                    'date' => $order->created_at->format('d F Y'),
+                    'date' => $order->created_at->format('d.m.Y'),
                     'status' => $order->status,
                     'statusText' => $this->getStatusText($order->status),
                     'total' => $order->total_price,
                     'itemsCount' => $order->items->sum('quantity'),
-                    'items' => $order->items->whereNotNull('title')->where('title', '!=', '')->map(function($item){
+
+                    'items' => $order->items->map(function ($item) {
                         return [
                             'id' => $item->id,
-                            'name' => $item->title,
-                            'brand' => $item->brand,
+                            'name' => $item->title ?? 'Товар',
+                            'brand' => $item->brand ?? '',
                             'price' => $item->price,
                             'quantity' => $item->quantity,
                             'icon' => '🛍️'
                         ];
                     })->values(),
                 ];
-            })->values();
+            });
 
         return response()->json($orders);
     }

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Partner extends Model
+class Partner extends Authenticatable
 {
-    protected $table = 'partner_requests'; 
+    use HasApiTokens;
+
+    protected $table = 'partner_requests';
 
     protected $fillable = [
         'name',
