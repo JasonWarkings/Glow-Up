@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\PartnerAuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PromotionApiController;
 use App\Http\Controllers\Admin\PartnerRequestController;
+use App\Http\Controllers\Api\PartnerApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,13 @@ Route::delete('/cart/remove/{id}', [CartApiController::class, 'remove']);
 Route::get('/promotions', [PromotionApiController::class, 'index']);
 Route::get('/promotions/{id}', [PromotionApiController::class, 'show']);
 
+
+    // partners
+    Route::get('/partners', [PartnerApiController::class, 'index']);
+    Route::post('/partners/{id}/approve', [PartnerApiController::class, 'approve']);
+    Route::post('/partners/{id}/reject', [PartnerApiController::class, 'reject']);
+    Route::delete('/partners/{id}', [PartnerApiController::class, 'destroy']);
+
 // ---------- PROTECTED ----------
 
     Route::post('/partner/products', [ProductApiController::class, 'store']);
@@ -90,8 +98,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // coupons
     Route::post('/coupons/check', [CouponApiController::class, 'check']);
-
-
 
 
 }); 

@@ -42,39 +42,37 @@ class PartnerAuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required'
-        ]);
+        {
+            $request->validate([
+                'email'    => 'required|email',
+                'password' => 'required'
+            ]);
 
-        $partner = Partner::where('email', $request->email)->first();
+            $partner = Partner::where('email', $request->email)->first();
 
-        $token = $partner->createToken('partner_token')->plainTextToken;
+            if (!$partner) {
+                return response()->json(['message' => 'Партнер не найден'], 404);
+            }
 
+            if (!Hash::check($request->password, $partner->password)) {
+                return response()->json(['message' => 'Неверный пароль'], 401);
+            }
 
-        if (!$partner) {
-            return response()->json(['message' => 'Партнер не найден'], 404);
+            if ($partner->status === 'pending') {
+                return response()->json(['message' => 'Ваша заявка еще не одобрена'], 403);
+            }
+
+            if ($partner->status === 'rejected') {
+                return response()->json(['message' => 'Ваша заявка была отклонена'], 403);
+            }
+
+            $token = $partner->createToken('partner_token')->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Вход выполнен',
+                'partner' => $partner,
+                'token'   => $token,
+            ]);
         }
-
-        if (!Hash::check($request->password, $partner->password)) {
-            return response()->json(['message' => 'Неверный пароль'], 401);
-        }
-
-        if ($partner->status === 'pending') {
-            return response()->json(['message' => 'Ваша заявка еще не одобрена'], 403);
-        }
-
-        if ($partner->status === 'rejected') {
-            return response()->json(['message' => 'Ваша заявка была отклонена'], 403);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Вход выполнен',
-            'partner' => $partner,
-            'token' => $token,
-        ]);
-        
-    }
 }

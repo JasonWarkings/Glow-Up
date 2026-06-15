@@ -9,8 +9,6 @@ class Partner extends Authenticatable
 {
     use HasApiTokens;
 
-    protected $table = 'partner_requests';
-
     protected $fillable = [
         'name',
         'email',

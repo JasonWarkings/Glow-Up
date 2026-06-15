@@ -16,10 +16,14 @@ return new class extends Migration
             $table->integer('price');
             $table->string('discount')->nullable();
             $table->string('image')->nullable();
+
+            $table->foreignId('partner_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+
             $table->timestamps();
-            $table->unsignedBigInteger('partner_id')->nullable(); 
-            $table->foreignId('partner_id')->nullable()->constrained()->nullOnDelete();
-       });
+        });
     }
 
     public function down(): void

@@ -18,6 +18,8 @@ return new class extends Migration
                 $table->string('email')->unique();
                 $table->string('password');
 
+                $table->text('description')->nullable(); // 👈 ДОБАВИТЬ
+
                 $table->enum('status', ['pending', 'approved', 'rejected'])
                     ->default('pending');
 

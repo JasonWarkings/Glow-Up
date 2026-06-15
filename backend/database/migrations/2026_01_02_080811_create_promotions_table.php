@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->integer('discount')->default(0);
             $table->timestamps();
+            $table->string('category')->nullable();
         });
     }
 
