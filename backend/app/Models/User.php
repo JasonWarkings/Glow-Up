@@ -31,4 +31,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // ✅ ВОТ ЭТО ГЛАВНОЕ
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'favorites',
+            'user_id',
+            'product_id'
+        );
+    }
 }

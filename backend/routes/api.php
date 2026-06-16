@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PromotionApiController;
 use App\Http\Controllers\Admin\PartnerRequestController;
 use App\Http\Controllers\Api\PartnerApiController;
+use App\Http\Controllers\Api\BrandApiController;
+use App\Http\Controllers\Api\FavoriteController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +68,12 @@ Route::get('/promotions/{id}', [PromotionApiController::class, 'show']);
     Route::post('/partners/{id}/approve', [PartnerApiController::class, 'approve']);
     Route::post('/partners/{id}/reject', [PartnerApiController::class, 'reject']);
     Route::delete('/partners/{id}', [PartnerApiController::class, 'destroy']);
+    Route::get('/partners/{id}', [PartnerApiController::class, 'show']);
+    
+    // brands
+    Route::get('/brands', [BrandApiController::class, 'index']);
+    Route::get('/brands/{id}', [BrandApiController::class, 'show']);
+    
 
 // ---------- PROTECTED ----------
 
@@ -99,8 +108,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // coupons
     Route::post('/coupons/check', [CouponApiController::class, 'check']);
 
-
-}); 
+    // favorites
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites/{productId}', [FavoriteController::class, 'toggle']);}); 
 
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 

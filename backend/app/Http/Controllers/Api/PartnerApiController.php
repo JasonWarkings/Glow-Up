@@ -79,4 +79,19 @@ class PartnerApiController extends Controller
         $partner->delete();
         return response()->json(['message' => 'Удалён']);
     }
+    public function show($id)
+    {
+        $partner = PartnerRequest::findOrFail($id);
+
+        return response()->json([
+            'id'          => $partner->id,
+            'name'        => $partner->name,
+            'email'       => $partner->email,
+            'status'      => $partner->status,
+            'logo'        => $partner->logo,
+            'description' => $partner->description ?? '',
+            'created_at'  => $partner->created_at,
+            'updated_at'  => $partner->updated_at,
+        ]);
+    }
 }
