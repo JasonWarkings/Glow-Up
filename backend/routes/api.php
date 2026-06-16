@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\PartnerRequestController;
 use App\Http\Controllers\Api\PartnerApiController;
 use App\Http\Controllers\Api\BrandApiController;
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\AIController;
 
 
 /*
@@ -64,23 +65,26 @@ Route::get('/promotions/{id}', [PromotionApiController::class, 'show']);
 
 
     // partners
-    Route::get('/partners', [PartnerApiController::class, 'index']);
-    Route::post('/partners/{id}/approve', [PartnerApiController::class, 'approve']);
-    Route::post('/partners/{id}/reject', [PartnerApiController::class, 'reject']);
-    Route::delete('/partners/{id}', [PartnerApiController::class, 'destroy']);
-    Route::get('/partners/{id}', [PartnerApiController::class, 'show']);
+Route::get('/partners', [PartnerApiController::class, 'index']);
+Route::post('/partners/{id}/approve', [PartnerApiController::class, 'approve']);
+Route::post('/partners/{id}/reject', [PartnerApiController::class, 'reject']);
+Route::delete('/partners/{id}', [PartnerApiController::class, 'destroy']);
+Route::get('/partners/{id}', [PartnerApiController::class, 'show']);
     
     // brands
-    Route::get('/brands', [BrandApiController::class, 'index']);
-    Route::get('/brands/{id}', [BrandApiController::class, 'show']);
+Route::get('/brands', [BrandApiController::class, 'index']);
+Route::get('/brands/{id}', [BrandApiController::class, 'show']);
+   
+    // AI
+Route::post('/ai', [AIController::class, 'chat']);
     
 
 // ---------- PROTECTED ----------
 
-    Route::post('/partner/products', [ProductApiController::class, 'store']);
-    Route::get('/partner/products', [ProductApiController::class, 'partnerIndex']);
-    Route::delete('/partner/products/{id}', [ProductApiController::class, 'destroy']);
-    Route::match(['POST', 'PUT'], '/partner/products/{id}', [ProductApiController::class, 'update']);
+Route::post('/partner/products', [ProductApiController::class, 'store']);
+Route::get('/partner/products', [ProductApiController::class, 'partnerIndex']);
+Route::delete('/partner/products/{id}', [ProductApiController::class, 'destroy']);
+Route::match(['POST', 'PUT'], '/partner/products/{id}', [ProductApiController::class, 'update']);
     
 
 Route::middleware('auth:sanctum')->group(function () {
