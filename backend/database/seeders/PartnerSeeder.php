@@ -4,7 +4,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\PartnerRequest;
 
-class PartnerRequestSeeder extends Seeder
+class PartnerSeeder extends Seeder
 {
     public function run(): void
     {
