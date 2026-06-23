@@ -166,4 +166,13 @@ class ProductApiController extends Controller
         ];
     }
 
+    public function newArrivals()
+{
+    $products = Product::where('created_at', '>=', now()->subDays(7))
+        ->latest()
+        ->get();
+
+    return response()->json($products);
+}
+
 }

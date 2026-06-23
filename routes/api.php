@@ -51,6 +51,7 @@ Route::post('/partner/login', [PartnerAuthController::class, 'login']);
 
 // products
 Route::get('/products', [ProductApiController::class, 'index']);
+Route::get('/products/new', [ProductApiController::class, 'newArrivals']);
 Route::get('/products/{id}', [ProductApiController::class, 'show']);
 // categories
 Route::get('/categories', [CategoryController::class, 'index']);
