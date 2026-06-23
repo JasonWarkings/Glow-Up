@@ -32,7 +32,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // ✅ ВОТ ЭТО ГЛАВНОЕ
     public function favoriteProducts()
     {
         return $this->belongsToMany(
@@ -41,5 +40,9 @@ class User extends Authenticatable
             'user_id',
             'product_id'
         );
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }

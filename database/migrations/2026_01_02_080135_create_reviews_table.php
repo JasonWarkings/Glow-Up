@@ -10,11 +10,22 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('user_name');
-            $table->string('product_name');
+
+            $table->foreignId('product_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->tinyInteger('rating');
+
             $table->text('content');
-            $table->string('product_image')->nullable();
+
             $table->timestamps();
+
+            $table->unique(['product_id', 'user_id']);
         });
     }
 

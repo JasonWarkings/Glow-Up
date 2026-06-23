@@ -47,57 +47,38 @@ class PartnerApiController extends Controller
     }
 
     public function approve($id)
-{
-    $partnerRequest = PartnerRequest::findOrFail($id);
-    $partnerRequest->update(['status' => 'approved']);
+        {
+            $partnerRequest = PartnerRequest::findOrFail($id);
+            $partnerRequest->update(['status' => 'approved']);
 
-    $partner = Partner::updateOrCreate(
-        ['email' => $partnerRequest->email],
-        [
-            'name'        => $partnerRequest->name,
-            'password'    => $partnerRequest->password,
-            'description' => $partnerRequest->description ?? '',
-            'status'      => 'approved', // явно ставим approved
-        ]
-    );
+            // Копируем в таблицу partners
+            Partner::updateOrCreate(
+                ['email' => $partnerRequest->email],
+                [
+                    'name'        => $partnerRequest->name,
+                    'email'       => $partnerRequest->email,
+                    'password'    => $partnerRequest->password,
+                    'description' => $partnerRequest->description ?? '',
+                    'status'      => 'approved',
+                ]
+            );
 
-    \App\Models\Brand::updateOrCreate(
-        ['partner_request_id' => $partnerRequest->id],
-        [
-            'name' => $partnerRequest->name,
-            'logo' => $partnerRequest->logo,
-            'partner_request_id' => $partnerRequest->id,
-        ]
-    );
-
-    return response()->json(['message' => 'Партнёр принят']);
-}
+            return response()->json(['message' => 'Партнёр принят']);
+        }
 
     public function reject($id)
-{
-    $partnerRequest = PartnerRequest::findOrFail($id);
-    $partnerRequest->update(['status' => 'rejected']);
-
-    // Обновляем статус в таблице partners
-    \App\Models\Partner::where('email', $partnerRequest->email)
-        ->update(['status' => 'rejected']);
-
-    // Удаляем бренд если был создан
-    \App\Models\Brand::where('partner_request_id', $partnerRequest->id)->delete();
-
-    return response()->json(['message' => 'Отклонён']);
-}
+    {
+        $partner = PartnerRequest::findOrFail($id);
+        $partner->update(['status' => 'rejected']);
+        return response()->json(['message' => 'Отклонён']);
+    }
 
     public function destroy($id)
-{
-    $partner = PartnerRequest::findOrFail($id);
-    
-    \App\Models\Brand::where('partner_request_id', $partner->id)->delete();
-    
-    $partner->delete();
-    
-    return response()->json(['message' => 'Удалён']);
-}
+    {
+        $partner = PartnerRequest::findOrFail($id);
+        $partner->delete();
+        return response()->json(['message' => 'Удалён']);
+    }
     public function show($id)
     {
         $partner = PartnerRequest::findOrFail($id);

@@ -5,137 +5,74 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Promotion;
 use Illuminate\Support\Facades\Storage;
 
 class ProductApiController extends Controller
 {
     // Список всех продуктов
     public function index(Request $request)
-    {
-        $user = $request->user();
+        {
+            $user = $request->user();
 
-        $favoriteIds = collect();
+            $favoriteIds = collect();
 
-        if ($user) {
-            $favoriteIds = $user->favoriteProducts()
-                ->pluck('products.id')
-                ->flip(); // ключи = id
+            if ($user) {
+                $favoriteIds = $user->favoriteProducts()
+                    ->pluck('products.id')
+                    ->flip();
+            }
+
+            $products = Product::with(['promotions', 'category'])->get()->map(function ($product) use ($favoriteIds) {
+
+                $discountData = $this->applyDiscount($product);
+
+                return [
+                    'id' => $product->id,
+                    'title' => $product->title,
+                    'brand' => $product->brand,
+                    'category' => $product->category ?? 'Без категории',
+                    'price' => $product->price,
+                    'discount' => $discountData['discount'],
+                    'final_price' => $discountData['final_price'],
+                    'image' => $product->image,
+                    'description' => $product->description ?? '',
+                    'partner_id' => $product->partner_id,
+                    'is_favorite' => isset($favoriteIds[$product->id]),
+                ];
+            });
+
+            return response()->json($products);
         }
+    // Детали одного продукта
+    public function show(Request $request, $id)
+        {
+            $user = $request->user();
 
-        // Максимальная скидка по категориям из активных акций (как на странице "Акции")
-        $discountsByCategory = Promotion::get(['category', 'discount'])
-            ->groupBy('category')
-            ->map(fn($group) => $group->max('discount'));
+            $product = Product::with('promotions')->findOrFail($id);
 
-        $products = Product::get()->map(function ($product) use ($favoriteIds, $discountsByCategory) {
+            $discountData = $this->applyDiscount($product);
 
-            $pricing = $this->resolvePricing($product, $discountsByCategory);
+            $isFavorite = false;
 
-            return [
+            if ($user) {
+                $isFavorite = $user->favoriteProducts()
+                    ->where('products.id', $id)
+                    ->exists();
+            }
+
+            return response()->json([
                 'id' => $product->id,
                 'title' => $product->title,
                 'brand' => $product->brand,
-                'category' => $product->category,
+                'category_id' => $product->category_id,
                 'price' => $product->price,
-                'discount' => $pricing['discount'],
-                'final_price' => $pricing['final_price'],
+                'discount' => $discountData['discount'],
+                'final_price' => $discountData['final_price'],
                 'image' => $product->image,
                 'description' => $product->description ?? '',
-                'partner_id' => $product->partner_id,
-                'is_favorite' => isset($favoriteIds[$product->id]),
-                'created_at'  => $product->created_at, 
-            ];
-        });
-
-        return response()->json($products);
-    }
-
-    // Детали одного продукта
-    public function show(Request $request, $id)
-    {
-        $user = $request->user();
-
-        $product = Product::findOrFail($id);
-
-        $discountsByCategory = Promotion::where('category', $product->category)
-            ->get(['category', 'discount'])
-            ->groupBy('category')
-            ->map(fn($group) => $group->max('discount'));
-
-        $pricing = $this->resolvePricing($product, $discountsByCategory);
-
-        $isFavorite = false;
-
-        if ($user) {
-            $isFavorite = $user->favoriteProducts()
-                ->where('products.id', $id)
-                ->exists();
+                'is_favorite' => $isFavorite,
+            ]);
         }
-
-        return response()->json([
-            'id' => $product->id,
-            'title' => $product->title,
-            'brand' => $product->brand,
-            'category' => $product->category,
-            'price' => $product->price,
-            'discount' => $pricing['discount'],
-            'final_price' => $pricing['final_price'],
-            'image' => $product->image,
-            'description' => $product->description ?? '',
-            'is_favorite' => $isFavorite,
-            'is_new' => $product->created_at >= now()->subDays(14),
-        ]);
-    }
-
-    /**
-     * Считает итоговую скидку и цену товара, учитывая два независимых источника:
-     * 1) Акция по категории (таблица promotions, как на странице "Акции")
-     * 2) Персональная скидка товара (discount_active/discount_percent/discount_price,
-     *    с проверкой срока действия discount_start/discount_end если он указан)
-     *
-     * Возвращает тот вариант, который даёт покупателю более низкую цену.
-     */
-    private function resolvePricing(Product $product, $discountsByCategory): array
-    {
-        $price = (int) $product->price;
-
-        // 1) Скидка по категории
-        $categoryDiscount = (int) ($discountsByCategory->get($product->category) ?? 0);
-        $categoryFinalPrice = $categoryDiscount > 0
-            ? (int) round($price - ($price * $categoryDiscount / 100))
-            : $price;
-
-        // 2) Персональная скидка товара
-        $productDiscount = 0;
-        $productFinalPrice = $price;
-
-        if ($product->discount_active) {
-            $now = now();
-            $startOk = !$product->discount_start || $product->discount_start <= $now;
-            $endOk   = !$product->discount_end   || $product->discount_end   >= $now;
-
-            if ($startOk && $endOk) {
-                if ($product->discount_percent) {
-                    $productDiscount = (int) $product->discount_percent;
-                    $productFinalPrice = (int) round($price - ($price * $productDiscount / 100));
-                } elseif ($product->discount_price) {
-                    $productFinalPrice = (int) $product->discount_price;
-                    $productDiscount = $price > 0
-                        ? (int) round((1 - $productFinalPrice / $price) * 100)
-                        : 0;
-                }
-            }
-        }
-
-        // Берём вариант, который выгоднее для покупателя
-        if ($productFinalPrice < $categoryFinalPrice) {
-            return ['discount' => $productDiscount, 'final_price' => $productFinalPrice];
-        }
-
-        return ['discount' => $categoryDiscount, 'final_price' => $categoryFinalPrice];
-    }
-
     // Добавление нового продукта (для админки)
     public function store(Request $request)
     {
@@ -214,6 +151,19 @@ class ProductApiController extends Controller
         $product->update($data);
 
         return response()->json(['message' => 'Товар обновлён', 'product' => $product]);
+    }
+    private function applyDiscount($product)
+    {
+        $discount = $product->promotions->max('discount') ?? 0;
+
+        $finalPrice = $discount > 0
+            ? $product->price - ($product->price * $discount / 100)
+            : $product->price;
+
+        return [
+            'discount' => $discount,
+            'final_price' => round($finalPrice, 2),
+        ];
     }
 
 }

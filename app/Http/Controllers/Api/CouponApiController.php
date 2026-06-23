@@ -4,39 +4,40 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\PromoCode;
+use App\Models\Coupon;
+use Carbon\Carbon;
 
 class CouponApiController extends Controller
 {
     public function check(Request $request)
-{
-    $request->validate([
-        'code' => 'required|string'
-    ]);
+    {
+        $request->validate([
+            'code' => 'required|string'
+        ]);
 
-    $code = strtoupper(trim($request->code));
+        $code = $request->input('code');
+        $coupon = Coupon::where('code', $code)
+            ->where('is_active', true)
+            ->first();
 
-    $promo = PromoCode::where('code', $code)
-        ->where('is_active', true)
-        ->first();
+        if (!$coupon) {
+            return response()->json([
+                'message' => 'Промокод недействителен'
+            ], 404);
+        }
 
-    if (!$promo) {
+        $now = Carbon::now()->startOfDay();
+
+        if (($coupon->starts_at && $now->lt(Carbon::parse($coupon->starts_at))) ||
+            ($coupon->ends_at && $now->gt(Carbon::parse($coupon->ends_at)))) {
+            return response()->json([
+                'message' => 'Промокод неактивен по дате'
+            ], 400);
+        }
+
         return response()->json([
-            'message' => 'Промокод недействителен'
-        ], 404);
+            'code' => $coupon->code,
+            'discount' => $coupon->discount // процент скидки
+        ]);
     }
-
-    if ($promo->limit !== null &&
-        $promo->used_count >= $promo->limit) {
-
-        return response()->json([
-            'message' => 'Лимит использований исчерпан'
-        ], 400);
-    }
-
-    return response()->json([
-        'code' => $promo->code,
-        'discount' => $promo->discount
-    ]);
-}
 }

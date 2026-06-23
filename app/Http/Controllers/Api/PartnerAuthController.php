@@ -42,51 +42,37 @@ class PartnerAuthController extends Controller
     }
 
     public function login(Request $request)
-{
-    $request->validate([
-        'email'    => 'required|email',
-        'password' => 'required'
-    ]);
+        {
+            $request->validate([
+                'email'    => 'required|email',
+                'password' => 'required'
+            ]);
 
-    // Сначала ищем в partner_requests (pending/rejected которые ещё не в partners)
-    $partnerRequest = PartnerRequest::where('email', $request->email)->first();
+            $partner = Partner::where('email', $request->email)->first();
 
-    if ($partnerRequest && !Hash::check($request->password, $partnerRequest->password)) {
-        return response()->json(['message' => 'Неверный пароль'], 401);
-    }
+            if (!$partner) {
+                return response()->json(['message' => 'Партнер не найден'], 404);
+            }
 
-    if ($partnerRequest && $partnerRequest->status === 'pending') {
-        return response()->json([
-            'message' => 'Ваша заявка еще не одобрена',
-            'partner' => $partnerRequest
-        ], 403);
-    }
+            if (!Hash::check($request->password, $partner->password)) {
+                return response()->json(['message' => 'Неверный пароль'], 401);
+            }
 
-    if ($partnerRequest && $partnerRequest->status === 'rejected') {
-        return response()->json([
-            'message' => 'Ваша заявка была отклонена',
-            'partner' => $partnerRequest
-        ], 403);
-    }
+            if ($partner->status === 'pending') {
+                return response()->json(['message' => 'Ваша заявка еще не одобрена'], 403);
+            }
 
-    // Если approved — ищем в таблице partners
-    $partner = Partner::where('email', $request->email)->first();
+            if ($partner->status === 'rejected') {
+                return response()->json(['message' => 'Ваша заявка была отклонена'], 403);
+            }
 
-    if (!$partner) {
-        return response()->json(['message' => 'Партнер не найден'], 404);
-    }
+            $token = $partner->createToken('partner_token')->plainTextToken;
 
-    if (!Hash::check($request->password, $partner->password)) {
-        return response()->json(['message' => 'Неверный пароль'], 401);
-    }
-
-    $token = $partner->createToken('partner_token')->plainTextToken;
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Вход выполнен',
-        'partner' => $partner,
-        'token'   => $token,
-    ]);
-}
+            return response()->json([
+                'success' => true,
+                'message' => 'Вход выполнен',
+                'partner' => $partner,
+                'token'   => $token,
+            ]);
+        }
 }

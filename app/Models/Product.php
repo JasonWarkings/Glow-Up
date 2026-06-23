@@ -84,9 +84,9 @@ class Product extends Model
         }
 
     public function reviews()
-{
-    return $this->hasMany(Review::class);
-}
+        {
+            return $this->hasMany(Review::class);
+        }
     public function usersWhoFavorited()
         {
             return $this->belongsToMany(
@@ -94,5 +94,8 @@ class Product extends Model
                 'favorites'
             );
         }
-    
+    public function category()
+        {
+            return $this->belongsTo(Category::class);
+        }
 }

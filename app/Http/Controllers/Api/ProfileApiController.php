@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Address;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use App\Models\OrderItem;
 
 class ProfileApiController extends Controller
 {
@@ -89,39 +90,88 @@ class ProfileApiController extends Controller
     }
     // Заказы пользователя
     public function orders(Request $request)
+        {
+            $user = $request->user();
+
+            return Order::with('items.product')
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($order) {
+
+                    return [
+                        'id' => $order->id,
+                        'date' => $order->created_at->format('d.m.Y H:i'),
+                        'status' => $order->status,
+                        'statusText' => $this->getStatusText($order->status),
+                        'total' => $order->total_price,
+                        'itemsCount' => $order->items->sum('quantity'),
+
+                        'items' => $order->items->map(function ($item) {
+                            return [
+                                'id' => $item->id,
+                                'name' => $item->product->title ?? 'Товар',
+                                'brand' => $item->product->brand ?? '',
+                                'price' => $item->price,
+                                'quantity' => $item->quantity,
+                                'icon' => '🛍️'
+                            ];
+                        })->values(),
+                    ];
+                });
+        }
+    public function checkout(Request $request)
     {
         $user = $request->user();
 
-        $orders = Order::with('items')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($order) {
+        $order = Order::create([
+            'user_id' => $user->id,
+            'status' => 'processing',
+            'total_price' => $request->total,
+        ]);
 
-                return [
-                    'id' => $order->id,
-                    'date' => $order->created_at->format('d.m.Y'),
-                    'status' => $order->status,
-                    'statusText' => $this->getStatusText($order->status),
-                    'total' => $order->total_price,
-                    'itemsCount' => $order->items->sum('quantity'),
+        foreach ($request->items as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item['id'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'title' => $item['name'] ?? null,
+                'brand' => $item['brand'] ?? null,
+                'image' => $item['image'] ?? null,
+            ]);
+        }
 
-                    'items' => $order->items->map(function ($item) {
-                        return [
-                            'id' => $item->id,
-                            'name' => $item->title ?? 'Товар',
-                            'brand' => $item->brand ?? '',
-                            'price' => $item->price,
-                            'quantity' => $item->quantity,
-                            'icon' => '🛍️'
-                        ];
-                    })->values(),
-                ];
-            });
-
-        return response()->json($orders);
+        return response()->json($order);
     }
 
+    public function store(Request $request)
+    {
+        $user = $request->user();
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'status' => 'processing',
+            'total_price' => $request->total ?? 0,
+        ]);
+
+        foreach ($request->items as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item['id'] ?? null,
+                'price' => $item['price'] ?? 0,
+                'quantity' => $item['quantity'] ?? 1,
+                'title' => $item['name'] ?? 'Товар',
+                'brand' => $item['brand'] ?? null,
+                'image' => $item['image'] ?? null,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Order created',
+            'order' => $order
+        ]);
+    }
     // Адреса пользователя
     public function addresses(Request $request)
     {

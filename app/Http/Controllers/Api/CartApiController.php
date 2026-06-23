@@ -6,19 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class CartApiController extends Controller
 {
     // TODO: заменить на Auth::id() после настройки аутентификации
-    private function getUserId()
-    {
-        return 1; // временный тестовый пользователь
-    }
-
     // Получить корзину
     public function index()
     {
-        $userId = $this->getUserId();
+        $userId = auth()->id();
 
         // Берем все товары пользователя с продуктами
         $cartItems = Cart::where('user_id', $userId)->with('product')->get();
@@ -45,7 +41,7 @@ class CartApiController extends Controller
     {
         $request->validate(['product_id' => 'required|exists:products,id']);
 
-        $userId = $this->getUserId();
+        $userId = auth()->id();
         $productId = $request->product_id;
 
         // Проверяем, есть ли уже этот товар в корзине
@@ -83,7 +79,9 @@ class CartApiController extends Controller
     {
         $request->validate(['quantity' => 'required|integer|min:1']);
 
-        $cartItem = Cart::findOrFail($id);
+        $cartItem = Cart::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
@@ -103,9 +101,17 @@ class CartApiController extends Controller
     // Удалить товар из корзины
     public function remove($id)
     {
-        $cartItem = Cart::findOrFail($id);
+        $cartItem = Cart::where('id', $id)
+    ->where('user_id', auth()->id())
+    ->firstOrFail();
         $cartItem->delete();
 
         return response()->json(['message' => 'Товар удален из корзины']);
+    }
+    public function clear()
+    {
+        Cart::where('user_id', auth()->id())->delete();
+
+        return response()->json(['message' => 'cart cleared']);
     }
 }

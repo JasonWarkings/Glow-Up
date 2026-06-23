@@ -16,8 +16,10 @@ class Promotion extends Model
         'category',
     ];
 
-    public function products()
-    {
-        return $this->hasMany(\App\Models\Product::class, 'category', 'category');
-    }
-}   
+    public function category()
+        {
+            return $this->belongsTo(Category::class);
+        }
+}
+
+
