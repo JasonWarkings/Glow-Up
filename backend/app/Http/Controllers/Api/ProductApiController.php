@@ -12,6 +12,7 @@ class ProductApiController extends Controller
     // Список всех продуктов
     public function index(Request $request)
     {
+        
         $user = $request->user();
 
         $favoriteIds = collect();
@@ -27,16 +28,19 @@ class ProductApiController extends Controller
 
             $discount = $product->promotions->max('discount') ?? 0;
 
+            $basePrice = $product->price;
+            $markupPrice = $this->applyMarkup($basePrice);
+
             $finalPrice = $discount > 0
-                ? $product->price - ($product->price * $discount / 100)
-                : $product->price;
+                ? $markupPrice - ($markupPrice * $discount / 100)
+                : $markupPrice;
 
             return [
                 'id' => $product->id,
                 'title' => $product->title,
                 'brand' => $product->brand,
                 'category' => $product->category,
-                'price' => $product->price,
+                'price' => $markupPrice,
                 'discount' => $discount,
                 'final_price' => $finalPrice,
                 'image' => $product->image,
@@ -57,9 +61,11 @@ class ProductApiController extends Controller
 
         $discount = $product->promotions->max('discount') ?? 0;
 
+        $basePrice = $this->applyMarkup($product->price);
+
         $finalPrice = $discount > 0
-            ? $product->price - ($product->price * $discount / 100)
-            : $product->price;
+            ? $basePrice - ($basePrice * $discount / 100)
+            : $basePrice;
 
         $isFavorite = false;
 
@@ -74,7 +80,7 @@ class ProductApiController extends Controller
             'title' => $product->title,
             'brand' => $product->brand,
             'category' => $product->category,
-            'price' => $product->price,
+            'price' => $this->applyMarkup($product->price),
             'discount' => $discount,
             'final_price' => $finalPrice,
             'image' => $product->image,
@@ -163,5 +169,9 @@ class ProductApiController extends Controller
 
         return response()->json(['message' => 'Товар обновлён', 'product' => $product]);
     }
-
+    private function applyMarkup($price)
+    {
+        $markup = 1.6; 
+        return round($price * $markup);
+    }
 }
